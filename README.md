@@ -6,6 +6,8 @@ It is not affiliated with Pearson. All practice content is original, and results
 
 ## Local development
 
+BrightPath requires Node.js 22.18 or newer because the offline audio generator imports the TypeScript cue catalog directly.
+
 ```bash
 cp .env.example .env.local
 # Replace BETTER_AUTH_SECRET with a random 32+ character value
@@ -34,7 +36,7 @@ Listening cues are pre-generated as static WAV files with `gemini-3.1-flash-tts-
 npm run audio:generate
 ```
 
-The generator resumes existing files, follows a free-tier-safe request cadence, retries transient failures, and writes a SHA-256 manifest beside the audio. Use `npm run audio:generate -- --force` only when every cue should be replaced.
+The generator resumes existing files, validates Gemini's returned MIME type and sample rate, follows a free-tier-safe request cadence, retries transient failures, and writes a deterministic SHA-256 manifest beside the audio. Use `npm run audio:generate -- --force` only when every cue should be replaced. Use `npm run audio:generate -- --only <cue-id>` to regenerate one cue; the full manifest is refreshed after either command.
 
 ## Quality checks
 

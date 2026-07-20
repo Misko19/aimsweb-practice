@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import type { Assessment, Grade } from "@/lib/assessments";
 import { generatePracticeItems, isCorrectAnswer, oralPassageForGrade, writingPromptForGrade } from "@/lib/practice";
@@ -21,6 +21,8 @@ type SavedAttempt = {
   kind: "accuracy" | "words-read" | "word-count";
 };
 
+const subscribeToHydration = () => () => {};
+
 export function PracticeSession({ assessment, grade, childId }: Props) {
   const [stage, setStage] = useState<Stage>("intro");
   const [items, setItems] = useState(() => generatePracticeItems(assessment, grade));
@@ -33,6 +35,7 @@ export function PracticeSession({ assessment, grade, childId }: Props) {
   const [writing, setWriting] = useState("");
   const [writingPrompt, setWritingPrompt] = useState(() => writingPromptForGrade(grade));
   const [readingDone, setReadingDone] = useState(false);
+  const interactive = useSyncExternalStore(subscribeToHydration, () => true, () => false);
   const [saveStatus, setSaveStatus] = useState<"local" | "saving" | "saved" | "consent" | "rate-limit" | "error">("local");
   const startedAt = useRef(0);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -170,7 +173,7 @@ export function PracticeSession({ assessment, grade, childId }: Props) {
             {assessment.adultHelp && <li>A grown-up helper can sit nearby.</li>}
           </ul>
         </div>
-        <button className="button button-primary button-large" onClick={begin}>Let&apos;s go <span aria-hidden="true">→</span></button>
+        <button className="button button-primary button-large" disabled={!interactive} onClick={begin}>Let&apos;s go <span aria-hidden="true">→</span></button>
         <p className="fine-print">Results on this device are practice metrics—not official test scores.</p>
       </section>
     );
@@ -242,8 +245,21 @@ export function PracticeSession({ assessment, grade, childId }: Props) {
         <span>{Math.round(((index + 1) / items.length) * 100)}%</span>
       </div>
       <div className="progress-track" aria-hidden="true"><span style={{ width: `${((index + 1) / items.length) * 100}%` }} /></div>
-      {current?.speak && current.audioCue && <button className="listen-button" disabled={listeningAudio.status === "loading"} onClick={() => listeningAudio.play(current.audioCue!, current.speak!)} aria-label="Listen to the question">🔊 {listeningAudio.status === "loading" ? "Loading…" : listeningAudio.status === "playing" || listeningAudio.status === "fallback" ? "Playing…" : "Listen"}</button>}
-      {listeningAudio.status === "error" && <p className="fine-print" role="status">Audio is unavailable right now. Ask a grown-up to read the prompt.</p>}
+      {current?.speak && current.audioCue && (
+        <button className="listen-button" onClick={() => listeningAudio.play(current.audioCue!, current.speak!)}>
+          <span aria-hidden="true">🔊</span>{" "}
+          {listeningAudio.status === "loading"
+            ? "Loading audio…"
+            : listeningAudio.status === "playing"
+              ? "Audio playing…"
+              : listeningAudio.status === "fallback"
+                ? "Backup audio playing…"
+                : "Listen"}
+        </button>
+      )}
+      <p className="fine-print" role="status" aria-live="polite">
+        {listeningAudio.status === "error" ? "Audio is unavailable right now. Ask a grown-up to read the prompt." : ""}
+      </p>
       {current?.context && <p className="question-context">{current.context}</p>}
       <h1 className="question-prompt">{current?.prompt}</h1>
       {current?.choices ? (

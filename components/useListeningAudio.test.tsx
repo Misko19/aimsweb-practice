@@ -5,6 +5,7 @@ import { useListeningAudio } from "./useListeningAudio";
 const cancelSpeech = vi.fn();
 const speakFallback = vi.fn();
 const audioInstances: MockAudio[] = [];
+let playReturnsUndefined = false;
 
 class MockAudio {
   currentTime = 0;
@@ -12,7 +13,13 @@ class MockAudio {
   onerror: (() => void) | null = null;
   onplaying: (() => void) | null = null;
   pause = vi.fn();
-  play = vi.fn(async () => this.onplaying?.());
+  load = vi.fn();
+  removeAttribute = vi.fn();
+  play = vi.fn(() => {
+    if (playReturnsUndefined) return undefined;
+    this.onplaying?.();
+    return Promise.resolve();
+  });
   preload = "";
 
   constructor(public src: string) {
@@ -22,6 +29,7 @@ class MockAudio {
 
 beforeEach(() => {
   audioInstances.length = 0;
+  playReturnsUndefined = false;
   cancelSpeech.mockClear();
   speakFallback.mockClear();
   vi.stubGlobal("Audio", MockAudio);
@@ -36,7 +44,10 @@ beforeEach(() => {
   });
 });
 
-afterEach(() => vi.unstubAllGlobals());
+afterEach(() => {
+  vi.useRealTimers();
+  vi.unstubAllGlobals();
+});
 
 describe("useListeningAudio", () => {
   it("plays the mapped Erinome asset and stops it on demand", async () => {
@@ -49,6 +60,8 @@ describe("useListeningAudio", () => {
     act(() => result.current.stop());
     expect(audioInstances[0]?.pause).toHaveBeenCalled();
     expect(audioInstances[0]?.currentTime).toBe(0);
+    expect(audioInstances[0]?.removeAttribute).toHaveBeenCalledWith("src");
+    expect(audioInstances[0]?.load).toHaveBeenCalled();
     expect(result.current.status).toBe("idle");
   });
 
@@ -56,7 +69,7 @@ describe("useListeningAudio", () => {
     const { result } = renderHook(() => useListeningAudio());
     await act(async () => result.current.play("initial-sounds:moon", "moon"));
     act(() => audioInstances[0]?.onerror?.());
-    expect(speakFallback).toHaveBeenCalled();
+    expect(speakFallback.mock.calls.some(([utterance]) => utterance.text === "moon")).toBe(true);
     expect(result.current.status).toBe("fallback");
   });
 
@@ -65,5 +78,46 @@ describe("useListeningAudio", () => {
     await act(async () => result.current.play("initial-sounds:moon", "moon"));
     unmount();
     expect(audioInstances[0]?.pause).toHaveBeenCalled();
+  });
+
+  it("supports browsers whose audio play method returns undefined", () => {
+    playReturnsUndefined = true;
+    const { result } = renderHook(() => useListeningAudio());
+    act(() => result.current.play("initial-sounds:moon", "moon"));
+    expect(result.current.status).toBe("loading");
+    act(() => audioInstances[0]?.onplaying?.());
+    expect(result.current.status).toBe("playing");
+  });
+
+  it("falls back when audio loading stalls", () => {
+    vi.useFakeTimers();
+    playReturnsUndefined = true;
+    const { result } = renderHook(() => useListeningAudio());
+    act(() => result.current.play("initial-sounds:moon", "moon"));
+    act(() => vi.advanceTimersByTime(8_000));
+    expect(speakFallback.mock.calls.some(([utterance]) => utterance.text === "moon")).toBe(true);
+    expect(result.current.status).toBe("fallback");
+  });
+
+  it("reports an error when browser speech is silently dropped", () => {
+    vi.useFakeTimers();
+    const { result } = renderHook(() => useListeningAudio());
+    act(() => result.current.play("initial-sounds:moon", "moon"));
+    act(() => audioInstances[0]?.onerror?.());
+    act(() => vi.advanceTimersByTime(8_000));
+    expect(cancelSpeech).toHaveBeenCalled();
+    expect(result.current.status).toBe("error");
+  });
+
+  it("ignores stale browser-speech completion handlers", () => {
+    const utterances: Array<{ onend: (() => void) | null }> = [];
+    speakFallback.mockImplementation((utterance) => utterances.push(utterance));
+    const { result } = renderHook(() => useListeningAudio());
+    act(() => result.current.play("initial-sounds:moon", "moon"));
+    act(() => audioInstances[0]?.onerror?.());
+    const staleOnEnd = utterances.find((utterance) => utterance.onend)?.onend;
+    act(() => result.current.play("initial-sounds:tiger", "tiger"));
+    act(() => staleOnEnd?.());
+    expect(result.current.status).toBe("playing");
   });
 });

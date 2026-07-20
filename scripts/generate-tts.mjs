@@ -1,11 +1,12 @@
 import { createHash } from "node:crypto";
-import { mkdir, readFile, rename, stat, writeFile } from "node:fs/promises";
+import { mkdir, readFile, rename, stat, unlink, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import {
   LISTENING_AUDIO_CUES,
   LISTENING_AUDIO_MODEL,
   LISTENING_AUDIO_VOICE,
 } from "../lib/listening-audio.ts";
+import { audioFormat, findAudio, readWavMetadata, wrapPcmAsWav } from "./tts-utils.mjs";
 
 const apiKey = process.env.GEMINI_API_KEY;
 if (!apiKey) throw new Error("GEMINI_API_KEY is required. Load it from .env with node --env-file=.env.");
@@ -28,7 +29,7 @@ await Promise.all(Array.from({ length: concurrency }, async () => {
   }
 }));
 
-if (!only) await writeManifest();
+await writeManifest();
 
 async function generateCue(cue) {
   const outputPath = join(process.cwd(), "public", cue.src);
@@ -38,12 +39,20 @@ async function generateCue(cue) {
   }
 
   const prompt = promptFor(cue);
-  const pcm = await requestPcm(prompt, cue.id);
-  const wav = pcm.subarray(0, 4).toString("ascii") === "RIFF" ? pcm : wrapPcmAsWav(pcm);
+  const { data, format } = await requestAudio(prompt, cue.id);
+  const wav = format.isWav ? data : wrapPcmAsWav(data, format.sampleRate, format.channels);
+  const metadata = readWavMetadata(wav);
+  if (metadata.sampleRate !== 24_000) throw new Error(`Gemini returned ${metadata.sampleRate} Hz audio for ${cue.id}; expected 24000 Hz`);
   await mkdir(dirname(outputPath), { recursive: true });
   const temporaryPath = `${outputPath}.tmp`;
-  await writeFile(temporaryPath, wav);
-  await rename(temporaryPath, outputPath);
+  try {
+    await writeFile(temporaryPath, wav);
+    await rename(temporaryPath, outputPath);
+  } finally {
+    await unlink(temporaryPath).catch((error) => {
+      if (error?.code !== "ENOENT") throw error;
+    });
+  }
   console.log(`wrote ${cue.id} (${wav.length} bytes)`);
 }
 
@@ -59,7 +68,7 @@ function promptFor(cue) {
   return `Synthesize speech only. Use the clear Erinome voice for a grade-school learner. ${direction} Read the transcript exactly as written, with no introduction, label, commentary, or added words.\n\nTRANSCRIPT START\n${cue.text}\nTRANSCRIPT END`;
 }
 
-async function requestPcm(prompt, cueId) {
+async function requestAudio(prompt, cueId) {
   let lastError;
   for (let attempt = 1; attempt <= 4; attempt += 1) {
     try {
@@ -82,9 +91,10 @@ async function requestPcm(prompt, cueId) {
       if (!response.ok) throw new Error(`Gemini HTTP ${response.status}: ${JSON.stringify(body)}`);
       const audio = findAudio(body);
       if (!audio?.data) throw new Error(`Gemini returned no audio block for ${cueId}`);
-      const pcm = Buffer.from(audio.data, "base64");
-      if (pcm.length < 2 || pcm.length % 2 !== 0) throw new Error(`Gemini returned invalid PCM for ${cueId}`);
-      return pcm;
+      const format = audioFormat(audio);
+      const data = Buffer.from(audio.data, "base64");
+      if (data.length < 2) throw new Error(`Gemini returned empty audio for ${cueId}`);
+      return { data, format };
     } catch (error) {
       lastError = error;
       if (attempt < 4) await new Promise((resolve) => setTimeout(resolve, 750 * 2 ** (attempt - 1) + Math.random() * 300));
@@ -97,36 +107,6 @@ async function waitForRequestSlot() {
   const waitMs = Math.max(0, nextRequestAt - Date.now());
   nextRequestAt = Math.max(nextRequestAt, Date.now()) + requestIntervalMs;
   if (waitMs > 0) await new Promise((resolve) => setTimeout(resolve, waitMs));
-}
-
-function findAudio(body) {
-  if (body?.output_audio?.data) return body.output_audio;
-  for (const step of [...(body?.steps ?? [])].reverse()) {
-    if (step?.type !== "model_output") continue;
-    const content = step.content?.find?.((part) => part?.type === "audio" && part?.data);
-    if (content) return content;
-  }
-  return undefined;
-}
-
-function wrapPcmAsWav(pcm, sampleRate = 24_000, channels = 1, bitsPerSample = 16) {
-  const header = Buffer.alloc(44);
-  const byteRate = sampleRate * channels * bitsPerSample / 8;
-  const blockAlign = channels * bitsPerSample / 8;
-  header.write("RIFF", 0);
-  header.writeUInt32LE(36 + pcm.length, 4);
-  header.write("WAVE", 8);
-  header.write("fmt ", 12);
-  header.writeUInt32LE(16, 16);
-  header.writeUInt16LE(1, 20);
-  header.writeUInt16LE(channels, 22);
-  header.writeUInt32LE(sampleRate, 24);
-  header.writeUInt32LE(byteRate, 28);
-  header.writeUInt16LE(blockAlign, 32);
-  header.writeUInt16LE(bitsPerSample, 34);
-  header.write("data", 36);
-  header.writeUInt32LE(pcm.length, 40);
-  return Buffer.concat([header, pcm]);
 }
 
 async function fileHasContent(path) {
@@ -142,15 +122,19 @@ async function writeManifest() {
   for (const cue of LISTENING_AUDIO_CUES) {
     const path = join(process.cwd(), "public", cue.src);
     const audio = await readFile(path);
+    const metadata = readWavMetadata(audio);
     entries.push({
       id: cue.id,
       src: cue.src,
       bytes: audio.length,
+      mimeType: "audio/wav",
+      sampleRate: metadata.sampleRate,
+      durationSeconds: Number(metadata.durationSeconds.toFixed(3)),
       audioSha256: createHash("sha256").update(audio).digest("hex"),
       sourceSha256: createHash("sha256").update(`${LISTENING_AUDIO_MODEL}\n${LISTENING_AUDIO_VOICE}\n${promptFor(cue)}`).digest("hex"),
     });
   }
   const manifestPath = join(process.cwd(), "public/audio/erinome/manifest.json");
   await mkdir(dirname(manifestPath), { recursive: true });
-  await writeFile(manifestPath, `${JSON.stringify({ model: LISTENING_AUDIO_MODEL, voice: LISTENING_AUDIO_VOICE, generatedAt: new Date().toISOString(), entries }, null, 2)}\n`);
+  await writeFile(manifestPath, `${JSON.stringify({ model: LISTENING_AUDIO_MODEL, voice: LISTENING_AUDIO_VOICE, entries }, null, 2)}\n`);
 }

@@ -17,7 +17,7 @@ test("guest can choose grade 2 and complete a reading activity", async ({ page }
     const checkAnswer = page.getByRole("button", { name: "Check answer" });
     await expect(checkAnswer).toBeEnabled();
     await checkAnswer.click();
-    await expect(page.getByRole("status")).toBeHidden();
+    await expect(page.getByText("Answer saved. Keep going!")).toBeHidden();
   }
 
   await expect(page.getByRole("heading", { name: "Nice, steady work!" })).toBeVisible();

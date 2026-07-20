@@ -1,10 +1,6 @@
 import type { Assessment, Grade } from "./assessments";
-import {
-  SPELLING_WORDS,
-  WINDOW_GARDEN_PASSAGE,
-  listeningCueId,
-  type ListeningAudioCueId,
-} from "./listening-audio";
+import { WINDOW_GARDEN_PASSAGE, listeningCueId, type ListeningAudioCueId } from "./listening-audio";
+import { PHONEME_ITEMS, SPELLING_WORDS, VOCABULARY_ITEMS } from "./listening-content";
 
 export type PracticeItem = {
   id: string;
@@ -34,39 +30,6 @@ const shuffle = <T,>(values: readonly T[], rng: Rng) => {
   }
   return shuffled;
 };
-
-const wordsByLevel: Record<"early" | "middle" | "advanced", readonly (readonly [string, string, string, string])[]> = {
-  early: [
-    ["tiny", "very small", "very loud", "very slow"],
-    ["glad", "happy", "sleepy", "empty"],
-    ["begin", "start", "hide", "carry"],
-    ["swift", "fast", "soft", "round"],
-    ["enormous", "very large", "very quiet", "very old"],
-    ["protect", "keep safe", "take apart", "move quickly"],
-    ["reply", "answer", "question", "picture"],
-    ["fragile", "easy to break", "hard to lift", "full of water"],
-  ],
-  middle: [
-    ["observe", "watch carefully", "forget", "divide"],
-    ["scarce", "hard to find", "brightly colored", "easy to carry"],
-    ["reluctant", "not eager", "very certain", "full of energy"],
-    ["conclude", "decide after thinking", "begin again", "ask permission"],
-    ["fortunate", "having good luck", "feeling confused", "moving slowly"],
-    ["contrast", "show differences", "repeat exactly", "join permanently"],
-    ["essential", "completely necessary", "barely visible", "recently discovered"],
-    ["adapt", "change to fit", "refuse to move", "measure precisely"],
-  ],
-  advanced: [
-    ["ambiguous", "open to more than one meaning", "perfectly balanced", "easily measured"],
-    ["mitigate", "make less severe", "copy exactly", "prove impossible"],
-    ["pragmatic", "focused on practical results", "guided by nostalgia", "unable to change"],
-    ["corroborate", "support with more evidence", "hide from view", "argue without evidence"],
-    ["ubiquitous", "present almost everywhere", "rarely understood", "carefully hidden"],
-    ["nuance", "a subtle distinction", "a final decision", "a loud objection"],
-    ["resilient", "able to recover", "likely to disappear", "unwilling to learn"],
-    ["scrutinize", "examine closely", "summarize briefly", "discard immediately"],
-  ],
-} as const;
 
 const passages = {
   early: {
@@ -264,7 +227,7 @@ function readingItem(slug: string, grade: Grade, id: string, rng: Rng): Practice
     return item(id, `Which word begins with the same sound as “${target}”?`, answer, shuffle([answer, ...others], rng), { speak: target, audioCue: listeningCueId("initial-sounds", target) });
   }
   if (slug === "auditory-vocabulary" || slug === "vocabulary") {
-    const [word, answer, wrongA, wrongB] = pick(wordsByLevel[level], rng);
+    const [word, answer, wrongA, wrongB] = pick(VOCABULARY_ITEMS[level], rng);
     return item(id, `What does “${word}” mean?`, answer, shuffle([answer, wrongA, wrongB], rng), { speak: word, audioCue: listeningCueId("vocabulary", word, level) });
   }
   if (slug === "letter-naming") {
@@ -272,7 +235,7 @@ function readingItem(slug: string, grade: Grade, id: string, rng: Rng): Practice
     return item(id, "Type this letter.", letter.toLowerCase(), undefined, { context: rng() > 0.5 ? letter : letter.toLowerCase() });
   }
   if (slug === "phoneme-segmentation") {
-    const values = pick([["ship", "3"], ["map", "3"], ["stop", "4"], ["fish", "3"], ["moon", "3"], ["chat", "3"], ["frog", "4"], ["sun", "3"]] as const, rng);
+    const values = pick(PHONEME_ITEMS, rng);
     return item(id, `How many separate sounds do you hear in “${values[0]}”?`, values[1], ["2", "3", "4"], { speak: values[0], audioCue: listeningCueId("phoneme-segmentation", values[0]) });
   }
   if (slug === "spelling") {

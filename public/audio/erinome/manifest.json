@@ -1,12 +1,14 @@
 {
   "model": "gemini-3.1-flash-tts-preview",
   "voice": "Erinome",
-  "generatedAt": "2026-07-20T20:10:27.926Z",
   "entries": [
     {
       "id": "initial-sounds:moon",
       "src": "/audio/erinome/initial-sounds/moon.wav",
       "bytes": 69164,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.44,
       "audioSha256": "ecefc4368d0742f057ee29de2a1a3da8f005863fa805e138f270083a98a85406",
       "sourceSha256": "077737c3d2900168317209b58e53e26dcf048b8d0b83f7e1df046e348194d6fb"
     },
@@ -14,6 +16,9 @@
       "id": "initial-sounds:tiger",
       "src": "/audio/erinome/initial-sounds/tiger.wav",
       "bytes": 67244,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.4,
       "audioSha256": "4ae392d54f620eeeb94dd21949fc8040201589a25469c9893a0b29506c3d1b37",
       "sourceSha256": "cf7506fa7cdcdbee9054afdb355b0441ca14d6884663b14d8ab4ebf822f0edf8"
     },
@@ -21,6 +26,9 @@
       "id": "initial-sounds:boat",
       "src": "/audio/erinome/initial-sounds/boat.wav",
       "bytes": 67244,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.4,
       "audioSha256": "e84feaaeebcbe092d3dd0f1fc60aaaeb7ce7cddbaa42f6159bd1e5c816940771",
       "sourceSha256": "460925f1bcaec13a75d21bfa2544a5bbd922827a25ad83cdf29253227e2701e0"
     },
@@ -28,6 +36,9 @@
       "id": "initial-sounds:sock",
       "src": "/audio/erinome/initial-sounds/sock.wav",
       "bytes": 71084,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.48,
       "audioSha256": "4c1f6f0697f506798556da75e216493ff749f4ee9cd64616e5493a20771701c7",
       "sourceSha256": "27e91798a82bf1863553500ae374c11f0e41319592938879607be8486bdf3603"
     },
@@ -35,6 +46,9 @@
       "id": "initial-sounds:goat",
       "src": "/audio/erinome/initial-sounds/goat.wav",
       "bytes": 69164,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.44,
       "audioSha256": "5160f14b463dc0013835a177ef506af2e5e2fe93e4d9cb9d2d235a7c9ca46350",
       "sourceSha256": "18cb12ef407f866b83653e6e0659e54df81c23ad777e96c7d790d8c4860da85d"
     },
@@ -42,6 +56,9 @@
       "id": "initial-sounds:rain",
       "src": "/audio/erinome/initial-sounds/rain.wav",
       "bytes": 65324,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.36,
       "audioSha256": "95c7a6ae93b70829fcdadfddd8b24cb3ff94cf58c3f3b82f0a736b88a70bc089",
       "sourceSha256": "6e033d8025ce6bd57704dec77e8dc281124cc5c1ce8bb6d143f16dfbb7efed05"
     },
@@ -49,6 +66,9 @@
       "id": "initial-sounds:leaf",
       "src": "/audio/erinome/initial-sounds/leaf.wav",
       "bytes": 71084,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.48,
       "audioSha256": "12b46044d9cba7f074968eeb21a4c77f4f79bdfbfcc1c88c3130c25a15425f38",
       "sourceSha256": "834348d0965e7650abeb9d8e7611950c5a1fff35546e19da66c0880c19b056e3"
     },
@@ -56,6 +76,9 @@
       "id": "initial-sounds:fish",
       "src": "/audio/erinome/initial-sounds/fish.wav",
       "bytes": 59564,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.24,
       "audioSha256": "2e720978adf3e098bda596ceb37e30e305a8a5266517f2dfa47a3dcf7d629d35",
       "sourceSha256": "8f95c873bad5a3d804761930ffb4ffe1e38538afd1e049abc3a34559e72a3ed9"
     },
@@ -63,6 +86,9 @@
       "id": "vocabulary:early:tiny",
       "src": "/audio/erinome/vocabulary/early/tiny.wav",
       "bytes": 71084,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.48,
       "audioSha256": "c98ece9a74b1c4228d0fafa808685422023c4e75df9486956ca640b4d5fa009c",
       "sourceSha256": "a6502eb33bbb4fc501235e7246558407ec1d83d3e4375a189af592b62c969104"
     },
@@ -70,6 +96,9 @@
       "id": "vocabulary:early:glad",
       "src": "/audio/erinome/vocabulary/early/glad.wav",
       "bytes": 71084,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.48,
       "audioSha256": "074f0ac0c445f476f6d7ec9fb4e195bf43b4d9b5d252035e820102a304924c26",
       "sourceSha256": "dde71567cffa863140fe80d22a03305853fe0c7542d585d8c9b05889e0c9a419"
     },
@@ -77,6 +106,9 @@
       "id": "vocabulary:early:begin",
       "src": "/audio/erinome/vocabulary/early/begin.wav",
       "bytes": 82604,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.72,
       "audioSha256": "c74eba9b0d6d399fed9ed2f5e3fc2b3e85d8e01e8742587c26a2d12c2ac6a7bc",
       "sourceSha256": "85e841cbfe1bfcef51f91b54757ebc0106412ff3f5c8ff16bb518e9e3ad11bbe"
     },
@@ -84,6 +116,9 @@
       "id": "vocabulary:early:swift",
       "src": "/audio/erinome/vocabulary/early/swift.wav",
       "bytes": 65324,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.36,
       "audioSha256": "9be54365ce5dee6f1e20d3d720ca5886e8b1d646ff15b8e44204f60b3f049d9b",
       "sourceSha256": "d43686882fd831ae9869cee75eaf760e1eef26ceab1eef24a2c1eab88fddcbac"
     },
@@ -91,6 +126,9 @@
       "id": "vocabulary:early:enormous",
       "src": "/audio/erinome/vocabulary/early/enormous.wav",
       "bytes": 97964,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 2.04,
       "audioSha256": "816e92e6df1078d73000d19fef088c8bc6dfc9f8a3b6e7536bd4cf53f5ad1ac1",
       "sourceSha256": "0235718b5fb8b844b925065df5066278231ea65a34782042ef8085b97737f07a"
     },
@@ -98,6 +136,9 @@
       "id": "vocabulary:early:protect",
       "src": "/audio/erinome/vocabulary/early/protect.wav",
       "bytes": 67244,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.4,
       "audioSha256": "eeb0af8bfa88dbc61cd9c49422606ac589250b6882bcbdb2d86625788d917e7e",
       "sourceSha256": "6e80538b1323ea4a844cdc15d4aa321860634189882b981f5a6e15c21b593b65"
     },
@@ -105,6 +146,9 @@
       "id": "vocabulary:early:reply",
       "src": "/audio/erinome/vocabulary/early/reply.wav",
       "bytes": 74924,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.56,
       "audioSha256": "144deebcdc2f5a8c9852b5f2903bf49e3b7af385ed84655b5331bed857f023c7",
       "sourceSha256": "e35ad91f822608457fb0ae3094e192cbcd139bf2af55ad674a3f82cd64f03b14"
     },
@@ -112,6 +156,9 @@
       "id": "vocabulary:early:fragile",
       "src": "/audio/erinome/vocabulary/early/fragile.wav",
       "bytes": 69164,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.44,
       "audioSha256": "e9e5b3a3d945e5af232ef3fc767518fec6dfe8b2279f71cef565f3e31a282f2b",
       "sourceSha256": "2ac9973a67b0d04cd7a851735394be2cb0cca755f1843c25310845844415af76"
     },
@@ -119,6 +166,9 @@
       "id": "vocabulary:middle:observe",
       "src": "/audio/erinome/vocabulary/middle/observe.wav",
       "bytes": 82604,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.72,
       "audioSha256": "6d2c74978a34ee61b847a47486c49fca9e8c3e64e4802619ec1c2e53f21f5d99",
       "sourceSha256": "f51b516a342b9693b8c7b836d17f15c52f9388d43ca03af2031793c93ff6287a"
     },
@@ -126,6 +176,9 @@
       "id": "vocabulary:middle:scarce",
       "src": "/audio/erinome/vocabulary/middle/scarce.wav",
       "bytes": 73004,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.52,
       "audioSha256": "e2f480a8aba16c14647cafe3f8a63cd3dcc9f7ecf1f8d6699ec223e853753ba4",
       "sourceSha256": "87c942628f4ec93d5589f8ed9e0233144829d4346fe8ba7ab692e5272f5a0e32"
     },
@@ -133,6 +186,9 @@
       "id": "vocabulary:middle:reluctant",
       "src": "/audio/erinome/vocabulary/middle/reluctant.wav",
       "bytes": 99884,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 2.08,
       "audioSha256": "cb6b6d185d016263f518ba7d7c850492bd656a5f3d71e403d1d3504c9ff29083",
       "sourceSha256": "70ebf0988163f771ac2980e34b03a8ab3051bd7c1429028148903ac56d297234"
     },
@@ -140,6 +196,9 @@
       "id": "vocabulary:middle:conclude",
       "src": "/audio/erinome/vocabulary/middle/conclude.wav",
       "bytes": 94124,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.96,
       "audioSha256": "bf457b643e2eb15a45927d76ccfb5b904a093b5676f97a1b5b11ce0cb28e55e8",
       "sourceSha256": "7f2786e19cf279ad9912e73a5e89f390527ba4ab5ed4677120479189d79cb6d0"
     },
@@ -147,6 +206,9 @@
       "id": "vocabulary:middle:fortunate",
       "src": "/audio/erinome/vocabulary/middle/fortunate.wav",
       "bytes": 82604,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.72,
       "audioSha256": "ca8714fc1cf59abb1b84894af10ef663fce54401bf910114413ae7066669b80e",
       "sourceSha256": "746d7cea02e58f918c41b365842dd7339c38010221d079f7913b915999194cad"
     },
@@ -154,6 +216,9 @@
       "id": "vocabulary:middle:contrast",
       "src": "/audio/erinome/vocabulary/middle/contrast.wav",
       "bytes": 82604,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.72,
       "audioSha256": "a5c547c6fca6912c944e5ef296245f494f70bf9a66b01518a6ea43de4496c924",
       "sourceSha256": "9e6118c8022d31c780d0467e6db804316423ca234b1b3a33397a61389e9ff9c8"
     },
@@ -161,6 +226,9 @@
       "id": "vocabulary:middle:essential",
       "src": "/audio/erinome/vocabulary/middle/essential.wav",
       "bytes": 82604,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.72,
       "audioSha256": "b013b9edca89b29fbce5680c97949dac21cd2a0830f806a613b3250c2cf353fa",
       "sourceSha256": "ab9af75808ba096dec4b5de95625ebcb2005076ab252f05539329b304366a9da"
     },
@@ -168,6 +236,9 @@
       "id": "vocabulary:middle:adapt",
       "src": "/audio/erinome/vocabulary/middle/adapt.wav",
       "bytes": 73004,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.52,
       "audioSha256": "4bd21f57454517896aa0ba9f76d5b4c422ba73d8268c4ebc21227c8429e78748",
       "sourceSha256": "1c3721dba8fbd846fe979e3761e645e2fe47a70a023e8ef1dd13485f5f4e5406"
     },
@@ -175,6 +246,9 @@
       "id": "vocabulary:advanced:ambiguous",
       "src": "/audio/erinome/vocabulary/advanced/ambiguous.wav",
       "bytes": 107564,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 2.24,
       "audioSha256": "8c3865e7de407d95d041e37d3f2c6748287eea61900d672db190c59a8174f8af",
       "sourceSha256": "06fb0f2495a966f7b416a47d60bd4581f05fb16db66464b124efecbdc6b98d96"
     },
@@ -182,6 +256,9 @@
       "id": "vocabulary:advanced:mitigate",
       "src": "/audio/erinome/vocabulary/advanced/mitigate.wav",
       "bytes": 92204,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.92,
       "audioSha256": "47489b596fc3fc70f28c01e8f6abd424c4e15b42eea0cf5c0e68e6536bc1377b",
       "sourceSha256": "695368e23096d9b42aff473a53bc9788f16234f4a8c8da81fe704beb6d8bdfb0"
     },
@@ -189,6 +266,9 @@
       "id": "vocabulary:advanced:pragmatic",
       "src": "/audio/erinome/vocabulary/advanced/pragmatic.wav",
       "bytes": 86444,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.8,
       "audioSha256": "8324797d5aa7b434dc8a4e4a121be3de53c3b7d35d5ce668f0e7e21f52b28bc5",
       "sourceSha256": "3a83e144cfa2f52a017a9e57d0f9afa4ed40ca02a2d36def1827f54c4ac10018"
     },
@@ -196,6 +276,9 @@
       "id": "vocabulary:advanced:corroborate",
       "src": "/audio/erinome/vocabulary/advanced/corroborate.wav",
       "bytes": 86444,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.8,
       "audioSha256": "9790e231374de017af53e678c515fdcb753e605a30fa2fb68ce4c084373f2c9f",
       "sourceSha256": "60b1cc9d88803168de3e3395992e9c4e91f4301be409cd3499f9798e9c0babe9"
     },
@@ -203,6 +286,9 @@
       "id": "vocabulary:advanced:ubiquitous",
       "src": "/audio/erinome/vocabulary/advanced/ubiquitous.wav",
       "bytes": 92204,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.92,
       "audioSha256": "4eed4e17b3b62fe2a130bdff611622e73f126b72d6a22dc9ef27755b7a1e10b8",
       "sourceSha256": "b4ea249a87c3adc8d9d7da113f986e12bda00fbd5a2f35f18c93d0b80619a726"
     },
@@ -210,6 +296,9 @@
       "id": "vocabulary:advanced:nuance",
       "src": "/audio/erinome/vocabulary/advanced/nuance.wav",
       "bytes": 76844,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.6,
       "audioSha256": "7b15ac45d412c83e1c61125be33d83eb0b3aaee36d1e747b337c70be1fb6364d",
       "sourceSha256": "de58d3abb2f44e2c1def19163278d99bd50fe94ff138876c863302ecc1935085"
     },
@@ -217,6 +306,9 @@
       "id": "vocabulary:advanced:resilient",
       "src": "/audio/erinome/vocabulary/advanced/resilient.wav",
       "bytes": 92204,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.92,
       "audioSha256": "49b42c7a69f22356df6b195d25e8c7b76bbf36dd91a1db8bd8aaccc7664b6c4d",
       "sourceSha256": "223cf96ee0d2bd568ac95ac9586e821587c762838d287e3e78b704204647a640"
     },
@@ -224,6 +316,9 @@
       "id": "vocabulary:advanced:scrutinize",
       "src": "/audio/erinome/vocabulary/advanced/scrutinize.wav",
       "bytes": 130604,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 2.72,
       "audioSha256": "c64daea76082e7e64d2955bc22f4acf5c538f8c480c30998f0a60b30d2d0df8e",
       "sourceSha256": "42543754462b4e4e1c88ca9f2df4b0a324a557dc40e7809fdd72e5b8d18e4b01"
     },
@@ -231,6 +326,9 @@
       "id": "phoneme-segmentation:ship",
       "src": "/audio/erinome/phoneme-segmentation/ship.wav",
       "bytes": 59564,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.24,
       "audioSha256": "431e62671f788e87aa0406a5fd03f383185fe54ccdcc24dedebb75c96a878d13",
       "sourceSha256": "ea9665bc7e21f22f3d6a993a3ef18c9893a0c404c02235d7c4bd943ee0fb9cbe"
     },
@@ -238,6 +336,9 @@
       "id": "phoneme-segmentation:map",
       "src": "/audio/erinome/phoneme-segmentation/map.wav",
       "bytes": 69164,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.44,
       "audioSha256": "525909ee8fdae6541e8accf48e944f6f385ad9553147b03cc92e0eb565dba0ce",
       "sourceSha256": "9472a70ab475c3dd641bff38baf57be97907db9005f96f206ae7e3dc12e8cda7"
     },
@@ -245,6 +346,9 @@
       "id": "phoneme-segmentation:stop",
       "src": "/audio/erinome/phoneme-segmentation/stop.wav",
       "bytes": 67244,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.4,
       "audioSha256": "b3b7cd7cf7c110721602dc39a26f252f90735c1d873d119b7d60d5fc1380bc4f",
       "sourceSha256": "d6e55db76ba9545830741f2e60a00aa5a344e7a9490548bfd7171090b094beb2"
     },
@@ -252,6 +356,9 @@
       "id": "phoneme-segmentation:fish",
       "src": "/audio/erinome/phoneme-segmentation/fish.wav",
       "bytes": 67244,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.4,
       "audioSha256": "7f6fb37e6fe01ad09f575d25b17a8ccca94e2fb50248c5a42dde059f9db25efd",
       "sourceSha256": "0625d5780f83dc990f1f77665e3fcec22618091de014001c4d2a1f8a4f7129ba"
     },
@@ -259,6 +366,9 @@
       "id": "phoneme-segmentation:moon",
       "src": "/audio/erinome/phoneme-segmentation/moon.wav",
       "bytes": 71084,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.48,
       "audioSha256": "731274ce74750d1dfbb4b3beec7c138d295edb387b421ca099eeb8563654451d",
       "sourceSha256": "3adca718607a944f1548cf7c7c877b70561403a808ec51d95b8ef320a6cfd1e5"
     },
@@ -266,6 +376,9 @@
       "id": "phoneme-segmentation:chat",
       "src": "/audio/erinome/phoneme-segmentation/chat.wav",
       "bytes": 55724,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.16,
       "audioSha256": "0987c2899477abdb3ef2bf0eda2b6f9d6b2759b35b9b959fff3a940a5747910a",
       "sourceSha256": "93a46fd22d6c71cbdf5ccaa02463f3154e4c29ae9d442418b44113cb497f50cd"
     },
@@ -273,6 +386,9 @@
       "id": "phoneme-segmentation:frog",
       "src": "/audio/erinome/phoneme-segmentation/frog.wav",
       "bytes": 63404,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.32,
       "audioSha256": "3b31775bf68a59a708609571bb56473b848afc34949f1cc7f789be6ba13ee698",
       "sourceSha256": "1d91eb576cb1b0c466fffedb9125b2ba964c6389fa97532ee7b49a04c2e991fc"
     },
@@ -280,6 +396,9 @@
       "id": "phoneme-segmentation:sun",
       "src": "/audio/erinome/phoneme-segmentation/sun.wav",
       "bytes": 65324,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.36,
       "audioSha256": "f8fcac5d455a2f1001f7d7a93d8a0752609c4c05f6c9f27d6519b06250829a73",
       "sourceSha256": "8805947af9a555e6cc672c53987bd7d5eaf64fe3aa9d307511956978aaa95a3a"
     },
@@ -287,6 +406,9 @@
       "id": "spelling:early:ship",
       "src": "/audio/erinome/spelling/early/ship.wav",
       "bytes": 65324,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.36,
       "audioSha256": "66d039143b6dc3520d031025c5f76b33563b6c871d6cffa18a4ad96ef42a130a",
       "sourceSha256": "69f6d1661a8d0ef322bad4f784077e7d495ff34d68db83f9b25e3091b2f39928"
     },
@@ -294,6 +416,9 @@
       "id": "spelling:early:green",
       "src": "/audio/erinome/spelling/early/green.wav",
       "bytes": 69164,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.44,
       "audioSha256": "0b872ded93672454ff6d42ec478ee28d4fe51d68a2c5460c5303a71da289362c",
       "sourceSha256": "3895d416747c50154c47981d1f3f956b4fb84d1f4003e4233d7fb92e17a0deba"
     },
@@ -301,6 +426,9 @@
       "id": "spelling:early:play",
       "src": "/audio/erinome/spelling/early/play.wav",
       "bytes": 65324,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.36,
       "audioSha256": "2ef6ca427c9e29f0c62e08bd4a8a7dd56914621dd01982b1c29f453fb5acfb71",
       "sourceSha256": "ea4342d279cb8b4b96bf8be883d4a889964c5c6bbf519d1abca56cc9b04e7cbc"
     },
@@ -308,6 +436,9 @@
       "id": "spelling:early:jump",
       "src": "/audio/erinome/spelling/early/jump.wav",
       "bytes": 63404,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.32,
       "audioSha256": "8c7f2c482573cff5b7ac865455ec7b08b0bf9f379ecb7a0553f46f5cc9664ca0",
       "sourceSha256": "39c7abbd5135128cda36877321525e6c611332df94d112622b204a397624e390"
     },
@@ -315,6 +446,9 @@
       "id": "spelling:early:bright",
       "src": "/audio/erinome/spelling/early/bright.wav",
       "bytes": 63404,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.32,
       "audioSha256": "7579257f989b5029fc008f8811c3496e1faaf55f1e4bc6a09fc3d13eb3a71e59",
       "sourceSha256": "a8ed4e26264916fcea8981a936ce89348af71818df5458f2542a23b7f8179884"
     },
@@ -322,6 +456,9 @@
       "id": "spelling:early:float",
       "src": "/audio/erinome/spelling/early/float.wav",
       "bytes": 76844,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.6,
       "audioSha256": "e45dd0286d5f4ad23c814fc25bc26f3172ffc6eaf65e0610d2c938be1576ffa5",
       "sourceSha256": "c675d11516cd4bf6c9fbb9981253c711414eb058d0b14ae39ebf19c3612dea21"
     },
@@ -329,6 +466,9 @@
       "id": "spelling:early:smile",
       "src": "/audio/erinome/spelling/early/smile.wav",
       "bytes": 97964,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 2.04,
       "audioSha256": "98a6798a85261946fe6c194c2e767a5db560b9c72b7c16c1bd8ded60747c5c6b",
       "sourceSha256": "3d059c8a09575612cf56e9486694e01cc7426fee56b1fbca698c82eee65a0703"
     },
@@ -336,6 +476,9 @@
       "id": "spelling:early:train",
       "src": "/audio/erinome/spelling/early/train.wav",
       "bytes": 76844,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.6,
       "audioSha256": "bd1feabec0d7d16822d3c18404e63d57fc3ac8ca670be4997a308c5e66b330d6",
       "sourceSha256": "782c435ecff13896e157e891f4b87eee3aa4cfe48d1fbb07a12956df54c7e519"
     },
@@ -343,6 +486,9 @@
       "id": "spelling:middle:journey",
       "src": "/audio/erinome/spelling/middle/journey.wav",
       "bytes": 82604,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.72,
       "audioSha256": "3e2c6f5318dd4da48e7dd1c1e43dd9418a535f2ebee4ac287e63c49c46cec317",
       "sourceSha256": "e92e258acedecf978505f6c18dd4fa63537445851e6b8f76ee5c8b11e3b3f05c"
     },
@@ -350,6 +496,9 @@
       "id": "spelling:middle:separate",
       "src": "/audio/erinome/spelling/middle/separate.wav",
       "bytes": 88364,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.84,
       "audioSha256": "4f7b146b8b6547e15defe1963cdad781a7a8aa4f4755ab6cbcbe636370f72480",
       "sourceSha256": "add3f44d1f894caa7e321e615bd9bd8ac87bd9a2ec4930f1e20fc7c11b3d33c4"
     },
@@ -357,6 +506,9 @@
       "id": "spelling:middle:curious",
       "src": "/audio/erinome/spelling/middle/curious.wav",
       "bytes": 99884,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 2.08,
       "audioSha256": "b6583834a0a29680a2db52c87985394d9d6e5299a7290dcc24beb0ce594f8ebf",
       "sourceSha256": "5cc9a915d63691c41c9b628369ed974c454d4a14611fc47744fea6c8cea30e64"
     },
@@ -364,6 +516,9 @@
       "id": "spelling:middle:necessary",
       "src": "/audio/erinome/spelling/middle/necessary.wav",
       "bytes": 92204,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.92,
       "audioSha256": "946b8988890193a34bb13c1cd87513ca5f64692c9b83caa326ecdeadf5bd63bf",
       "sourceSha256": "be0997abf9ebd65c0a207717c3e5d0026370f148b42e5a8278647f0d627f2954"
     },
@@ -371,6 +526,9 @@
       "id": "spelling:middle:calendar",
       "src": "/audio/erinome/spelling/middle/calendar.wav",
       "bytes": 88364,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.84,
       "audioSha256": "eba2fc0963a3b6cb45323731a0f100f49ed6be6eecf978449b18a3bc787686c8",
       "sourceSha256": "88c40a1f4e385a1831d33787f6a405138cce219d6757a5b564ea5e142ced81d4"
     },
@@ -378,6 +536,9 @@
       "id": "spelling:middle:favorite",
       "src": "/audio/erinome/spelling/middle/favorite.wav",
       "bytes": 96044,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 2,
       "audioSha256": "9187811a2bb16699f020e01ebde7245d43688f84cbc4f412ccd08e47266d6aee",
       "sourceSha256": "424940a0b2fcd7df190e3f384afdc46e5684228b0d8c32b83e69b0d8c270b1ad"
     },
@@ -385,6 +546,9 @@
       "id": "spelling:middle:mystery",
       "src": "/audio/erinome/spelling/middle/mystery.wav",
       "bytes": 105644,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 2.2,
       "audioSha256": "659378795999d11e75de90a97cc9c9cdc969c08789f55c57e9c08daeb72a2da5",
       "sourceSha256": "564dbf825a8bf07c797b9eb58749197abc0f055c012ea2eeb7a4918cc3ba9f69"
     },
@@ -392,6 +556,9 @@
       "id": "spelling:middle:exercise",
       "src": "/audio/erinome/spelling/middle/exercise.wav",
       "bytes": 94124,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.96,
       "audioSha256": "2428aa1dbe41c5158cc53334980e675832c8f05b69e782a366a1ce891ae429d0",
       "sourceSha256": "d28597e6bd6becffb62d6978fbe0c607428b743f9898cb1ce1bc8ef445723123"
     },
@@ -399,6 +566,9 @@
       "id": "spelling:advanced:conscientious",
       "src": "/audio/erinome/spelling/advanced/conscientious.wav",
       "bytes": 103724,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 2.16,
       "audioSha256": "55112724e2d5087e07823c5ddadb95fadc43e260035ada97fff8a5060a01716e",
       "sourceSha256": "3749c57f1852fe83d1a0305be815f24e2b3f1915cffff5ae5e93f15c9045036f"
     },
@@ -406,6 +576,9 @@
       "id": "spelling:advanced:accommodate",
       "src": "/audio/erinome/spelling/advanced/accommodate.wav",
       "bytes": 90284,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.88,
       "audioSha256": "8f26bccae157cb61cedc9173570a224ed1617f251397efff2d00195af3191fbd",
       "sourceSha256": "60630900fba06b32600004e78275495fe00b356a96388df4fdf4d5f9268a3f31"
     },
@@ -413,6 +586,9 @@
       "id": "spelling:advanced:rhythm",
       "src": "/audio/erinome/spelling/advanced/rhythm.wav",
       "bytes": 76844,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 1.6,
       "audioSha256": "513d535031bfddb0067c8bb2dd7fb190576f163744bd04ada99b70c2787b5491",
       "sourceSha256": "8430873b6e68f61cb63c4b4d68ad8203809facf6e3a0876c633c8c37fe5d5411"
     },
@@ -420,6 +596,9 @@
       "id": "spelling:advanced:perseverance",
       "src": "/audio/erinome/spelling/advanced/perseverance.wav",
       "bytes": 99884,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 2.08,
       "audioSha256": "ca9157b1e1bf0af15084cefdfa0795bde3aa1b99e15a8a9d8f064cbdc1c4407d",
       "sourceSha256": "11f24e77238e50703b5d7c3cb3456a77ca61d4713a26a4ae075df346100c1618"
     },
@@ -427,6 +606,9 @@
       "id": "spelling:advanced:indispensable",
       "src": "/audio/erinome/spelling/advanced/indispensable.wav",
       "bytes": 109484,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 2.28,
       "audioSha256": "a9a1b143304d8b46be88100c94f6192a5eb5aa979aa674e7f577356299a47d4d",
       "sourceSha256": "21be3d6ddd56aade05244c3ce2a6b0dcd9db41738f178a2ca78171bf0e4f67b9"
     },
@@ -434,6 +616,9 @@
       "id": "spelling:advanced:entrepreneur",
       "src": "/audio/erinome/spelling/advanced/entrepreneur.wav",
       "bytes": 176684,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 3.68,
       "audioSha256": "baab2d6a1c72d1812e5eb6ba2f9f069b334f41402684623f14d5cca7a8fc9281",
       "sourceSha256": "46686915c83ae425abc00b9ef779da4810c9faccddd66cb4258af1d3ceb0fe63"
     },
@@ -441,6 +626,9 @@
       "id": "spelling:advanced:questionnaire",
       "src": "/audio/erinome/spelling/advanced/questionnaire.wav",
       "bytes": 111404,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 2.32,
       "audioSha256": "666f85b9feb75a21758b28a064b38fb267de13adda7d4e73a6784cb7c12468c3",
       "sourceSha256": "5c3d80a22c9507d489adbe23af66f10f970fa1435d0e3b43e8f8b1000f6c203f"
     },
@@ -448,6 +636,9 @@
       "id": "spelling:advanced:maintenance",
       "src": "/audio/erinome/spelling/advanced/maintenance.wav",
       "bytes": 97964,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 2.04,
       "audioSha256": "2117a44a3d05b0cdf5801e8becff7aebe52f9bc64897349af56b61d8c3063ce9",
       "sourceSha256": "ee29251631ef361bd29f34b246ea8517a32acef16e8849a454df2235cca9c877"
     },
@@ -455,6 +646,9 @@
       "id": "listening-comprehension:the-window-garden",
       "src": "/audio/erinome/listening-comprehension/the-window-garden.wav",
       "bytes": 1418924,
+      "mimeType": "audio/wav",
+      "sampleRate": 24000,
+      "durationSeconds": 29.56,
       "audioSha256": "a30383e16816d0f45ca53a5235186629f708f1cc4f2e2bae79c2de55432935d6",
       "sourceSha256": "f02a624dc78327fd92aa90d3c7f9720a788a63e0ca86a145f9ba281d92b31da5"
     }
