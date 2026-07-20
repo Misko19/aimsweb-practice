@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
+import { parseAllowedDevOrigins } from "./lib/dev-origins";
 
 const nextConfig: NextConfig = {
-  allowedDevOrigins: ["127.0.0.1"],
+  allowedDevOrigins: parseAllowedDevOrigins(process.env.ALLOWED_DEV_ORIGINS),
   reactStrictMode: true,
   poweredByHeader: false,
   async headers() {
