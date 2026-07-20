@@ -33,8 +33,8 @@ test("parent creates a child and sees saved practice progress", async ({ page },
   for (let index = 0; index < total; index += 1) {
     await page.getByRole("group", { name: "Answer choices" }).getByRole("button").first().click();
     await page.getByRole("button", { name: "Check answer" }).click();
-    await expect(page.getByRole("status")).toBeVisible();
-    await expect(page.getByRole("status")).toBeHidden();
+    await expect(page.getByText("Answer saved. Keep going!")).toBeVisible();
+    await expect(page.getByText("Answer saved. Keep going!")).toBeHidden();
   }
   await expect(page.getByText("Progress saved to this child profile.")).toBeVisible();
 

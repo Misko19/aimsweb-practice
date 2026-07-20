@@ -1,4 +1,6 @@
 import type { Assessment, Grade } from "./assessments";
+import { WINDOW_GARDEN_PASSAGE, listeningCueId, type ListeningAudioCueId } from "./listening-audio";
+import { PHONEME_ITEMS, SPELLING_WORDS, VOCABULARY_ITEMS } from "./listening-content";
 
 export type PracticeItem = {
   id: string;
@@ -8,6 +10,7 @@ export type PracticeItem = {
   choices?: string[];
   answer: string;
   speak?: string;
+  audioCue?: ListeningAudioCueId;
 };
 
 export type OralPassage = {
@@ -28,43 +31,10 @@ const shuffle = <T,>(values: readonly T[], rng: Rng) => {
   return shuffled;
 };
 
-const wordsByLevel: Record<"early" | "middle" | "advanced", readonly (readonly [string, string, string, string])[]> = {
-  early: [
-    ["tiny", "very small", "very loud", "very slow"],
-    ["glad", "happy", "sleepy", "empty"],
-    ["begin", "start", "hide", "carry"],
-    ["swift", "fast", "soft", "round"],
-    ["enormous", "very large", "very quiet", "very old"],
-    ["protect", "keep safe", "take apart", "move quickly"],
-    ["reply", "answer", "question", "picture"],
-    ["fragile", "easy to break", "hard to lift", "full of water"],
-  ],
-  middle: [
-    ["observe", "watch carefully", "forget", "divide"],
-    ["scarce", "hard to find", "brightly colored", "easy to carry"],
-    ["reluctant", "not eager", "very certain", "full of energy"],
-    ["conclude", "decide after thinking", "begin again", "ask permission"],
-    ["fortunate", "having good luck", "feeling confused", "moving slowly"],
-    ["contrast", "show differences", "repeat exactly", "join permanently"],
-    ["essential", "completely necessary", "barely visible", "recently discovered"],
-    ["adapt", "change to fit", "refuse to move", "measure precisely"],
-  ],
-  advanced: [
-    ["ambiguous", "open to more than one meaning", "perfectly balanced", "easily measured"],
-    ["mitigate", "make less severe", "copy exactly", "prove impossible"],
-    ["pragmatic", "focused on practical results", "guided by nostalgia", "unable to change"],
-    ["corroborate", "support with more evidence", "hide from view", "argue without evidence"],
-    ["ubiquitous", "present almost everywhere", "rarely understood", "carefully hidden"],
-    ["nuance", "a subtle distinction", "a final decision", "a loud objection"],
-    ["resilient", "able to recover", "likely to disappear", "unwilling to learn"],
-    ["scrutinize", "examine closely", "summarize briefly", "discard immediately"],
-  ],
-} as const;
-
 const passages = {
   early: {
     title: "The Window Garden",
-    text: "Maya planted three bean seeds in a pot by the window. Each morning, she checked the dark soil. On Friday, a green loop pushed into the light. Maya drew the tiny sprout in her notebook. She measured it every day and turned the pot so each side could face the sun. Soon, broad leaves reached over the rim.",
+    text: WINDOW_GARDEN_PASSAGE,
   },
   middle: {
     title: "A Library for Tools",
@@ -254,23 +224,23 @@ function readingItem(slug: string, grade: Grade, id: string, rng: Rng): Practice
       ["fish", "fan", "rain", "goat"],
     ] as const;
     const [target, answer, ...others] = pick(sets, rng);
-    return item(id, `Which word begins with the same sound as “${target}”?`, answer, shuffle([answer, ...others], rng), { speak: target });
+    return item(id, `Which word begins with the same sound as “${target}”?`, answer, shuffle([answer, ...others], rng), { speak: target, audioCue: listeningCueId("initial-sounds", target) });
   }
   if (slug === "auditory-vocabulary" || slug === "vocabulary") {
-    const [word, answer, wrongA, wrongB] = pick(wordsByLevel[level], rng);
-    return item(id, `What does “${word}” mean?`, answer, shuffle([answer, wrongA, wrongB], rng), { speak: word });
+    const [word, answer, wrongA, wrongB] = pick(VOCABULARY_ITEMS[level], rng);
+    return item(id, `What does “${word}” mean?`, answer, shuffle([answer, wrongA, wrongB], rng), { speak: word, audioCue: listeningCueId("vocabulary", word, level) });
   }
   if (slug === "letter-naming") {
     const letter = pick("BCDFGHJKLMNPRSTVWYZ".split(""), rng);
     return item(id, "Type this letter.", letter.toLowerCase(), undefined, { context: rng() > 0.5 ? letter : letter.toLowerCase() });
   }
   if (slug === "phoneme-segmentation") {
-    const values = pick([["ship", "3"], ["map", "3"], ["stop", "4"], ["fish", "3"], ["moon", "3"], ["chat", "3"], ["frog", "4"], ["sun", "3"]] as const, rng);
-    return item(id, `How many separate sounds do you hear in “${values[0]}”?`, values[1], ["2", "3", "4"], { speak: values[0] });
+    const values = pick(PHONEME_ITEMS, rng);
+    return item(id, `How many separate sounds do you hear in “${values[0]}”?`, values[1], ["2", "3", "4"], { speak: values[0], audioCue: listeningCueId("phoneme-segmentation", values[0]) });
   }
   if (slug === "spelling") {
-    const word = pick(level === "early" ? ["ship", "green", "play", "jump", "bright", "float", "smile", "train"] : level === "middle" ? ["journey", "separate", "curious", "necessary", "calendar", "favorite", "mystery", "exercise"] : ["conscientious", "accommodate", "rhythm", "perseverance", "indispensable", "entrepreneur", "questionnaire", "maintenance"], rng);
-    return item(id, "Listen, then type the word.", word, undefined, { speak: word });
+    const word = pick(SPELLING_WORDS[level], rng);
+    return item(id, "Listen, then type the word.", word, undefined, { speak: word, audioCue: listeningCueId("spelling", word, level) });
   }
   if (slug === "nonsense-word-fluency") {
     const word = pick(["lat", "mip", "sog", "vab", "nup", "fep", "rish", "dax"], rng);
@@ -285,7 +255,7 @@ function readingItem(slug: string, grade: Grade, id: string, rng: Rng): Practice
   const passage = passages[level];
   if (slug === "listening-comprehension") {
     const qa = pick(comprehensionQuestions.early, rng);
-    return item(id, qa[0], qa[1], shuffle([qa[1], qa[2], qa[3]], rng), { context: "Tap the speaker and listen without reading.", speak: passages.early.text });
+    return item(id, qa[0], qa[1], shuffle([qa[1], qa[2], qa[3]], rng), { context: "Tap the speaker and listen without reading.", speak: passages.early.text, audioCue: listeningCueId("listening-comprehension", "the-window-garden") });
   }
   if (slug === "reading-comprehension-progress") {
     const qa = pick(progressQuestions, rng);

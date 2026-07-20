@@ -2,6 +2,9 @@
   "name": "brightpath-practice",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=22.18"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "node scripts/build.mjs",
@@ -13,7 +16,8 @@
     "test:e2e": "playwright test",
     "check": "npm run lint && npm run typecheck && npm run test && npm run build",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate"
+    "db:migrate": "drizzle-kit migrate",
+    "audio:generate": "node --env-file=.env scripts/generate-tts.mjs"
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "1.6.23",

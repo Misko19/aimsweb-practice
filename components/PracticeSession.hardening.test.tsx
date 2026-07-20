@@ -25,6 +25,7 @@ beforeEach(() => {
 afterEach(() => {
   cleanup();
   vi.useRealTimers();
+  vi.unstubAllGlobals();
 });
 
 describe("PracticeSession hardening", () => {
@@ -63,5 +64,26 @@ describe("PracticeSession hardening", () => {
     fireEvent.click(screen.getByRole("button", { name: "Finish writing" }));
     const saved = JSON.parse(window.localStorage.getItem("brightpath-attempts") ?? "[]");
     expect(saved[0].durationSeconds).toBe(3_600);
+  });
+
+  it("keeps the listening control focusable and announces an audio error", async () => {
+    vi.stubGlobal("Audio", class {
+      currentTime = 0;
+      onended: (() => void) | null = null;
+      onerror: (() => void) | null = null;
+      onplaying: (() => void) | null = null;
+      pause() {}
+      load() {}
+      removeAttribute() {}
+      play() { return Promise.reject(new Error("media unavailable")); }
+    });
+    vi.stubGlobal("SpeechSynthesisUtterance", undefined);
+    render(<PracticeSession assessment={findAssessment("listening-comprehension")!} grade="2" />);
+    fireEvent.click(screen.getByRole("button", { name: /Let's go/ }));
+    const listen = screen.getByRole("button", { name: "Listen" });
+    expect(listen).toBeEnabled();
+    fireEvent.click(listen);
+    expect(await screen.findByRole("status")).toHaveTextContent("Audio is unavailable right now");
+    expect(listen).toBeEnabled();
   });
 });
