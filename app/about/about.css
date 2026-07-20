@@ -1,0 +1,6 @@
+.article-page { width: min(760px, calc(100% - 2rem)); margin: 3rem auto 6rem; }
+.article-page h1 { margin: .5rem 0 1.5rem; font-size: clamp(2.4rem, 6vw, 4.3rem); line-height: 1.04; letter-spacing: -.05em; }
+.article-page h2 { margin-top: 2.5rem; font-size: 1.6rem; }
+.article-page p, .article-page li { color: #46536a; font-size: 1.03rem; }
+.article-page li { margin-block: .6rem; }
+.article-page a { color: #4939a8; font-weight: 750; }

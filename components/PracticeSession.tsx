@@ -1,0 +1,175 @@
+"use client";
+
+import { useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
+import type { Assessment, Grade } from "@/lib/assessments";
+import { generatePracticeItems, isCorrectAnswer, oralPassageForGrade } from "@/lib/practice";
+
+type Stage = "intro" | "active" | "result";
+
+type Props = { assessment: Assessment; grade: Grade };
+
+export function PracticeSession({ assessment, grade }: Props) {
+  const [stage, setStage] = useState<Stage>("intro");
+  const [items, setItems] = useState(() => generatePracticeItems(assessment, grade));
+  const [index, setIndex] = useState(0);
+  const [answer, setAnswer] = useState("");
+  const [correct, setCorrect] = useState(0);
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [elapsed, setElapsed] = useState(0);
+  const [wordsRead, setWordsRead] = useState("");
+  const [readingDone, setReadingDone] = useState(false);
+  const startedAt = useRef(0);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const passage = useMemo(() => oralPassageForGrade(grade), [grade]);
+  const current = items[index];
+
+  useEffect(() => {
+    if (stage !== "active") return;
+    const timer = window.setInterval(() => setElapsed(Math.floor((Date.now() - startedAt.current) / 1000)), 1000);
+    return () => window.clearInterval(timer);
+  }, [stage]);
+
+  useEffect(() => {
+    if (stage === "active" && assessment.mode !== "oral-reading") inputRef.current?.focus();
+  }, [stage, index, assessment.mode]);
+
+  function begin() {
+    setItems(generatePracticeItems(assessment, grade));
+    setIndex(0);
+    setAnswer("");
+    setCorrect(0);
+    setElapsed(0);
+    setWordsRead("");
+    setReadingDone(false);
+    startedAt.current = Date.now();
+    setStage("active");
+  }
+
+  function speak(text: string) {
+    if (!("speechSynthesis" in window)) return;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(new SpeechSynthesisUtterance(text));
+  }
+
+  function submitAnswer() {
+    if (!current || !answer.trim()) return;
+    const wasCorrect = isCorrectAnswer(answer, current.answer);
+    if (wasCorrect) setCorrect((value) => value + 1);
+    setShowFeedback(true);
+    window.setTimeout(() => {
+      setShowFeedback(false);
+      setAnswer("");
+      if (index + 1 >= items.length) finish(correct + (wasCorrect ? 1 : 0));
+      else setIndex((value) => value + 1);
+    }, 700);
+  }
+
+  function finish(finalCorrect = correct) {
+    const result = {
+      id: crypto.randomUUID(),
+      assessment: assessment.slug,
+      grade,
+      correct: assessment.mode === "oral-reading" ? Number(wordsRead || 0) : finalCorrect,
+      total: assessment.mode === "oral-reading" ? passage.wordCount : items.length,
+      durationSeconds: Math.max(1, Math.floor((Date.now() - startedAt.current) / 1000)),
+      completedAt: new Date().toISOString(),
+      kind: assessment.mode === "oral-reading" ? "words-read" : "accuracy",
+    };
+    try {
+      const previous = JSON.parse(window.localStorage.getItem("brightpath-attempts") ?? "[]") as unknown[];
+      window.localStorage.setItem("brightpath-attempts", JSON.stringify([result, ...previous].slice(0, 100)));
+    } catch {
+      // Practice still works when storage is unavailable.
+    }
+    setCorrect(finalCorrect);
+    setStage("result");
+  }
+
+  if (stage === "intro") {
+    return (
+      <section className="practice-panel intro-panel">
+        <div className="activity-emblem" aria-hidden="true">{assessment.domain === "Reading" ? "Aa" : "1+2"}</div>
+        <p className="eyebrow">Ready when you are</p>
+        <h1>{assessment.name}</h1>
+        <p className="practice-description">{assessment.description}</p>
+        <div className="instruction-box">
+          <h2>How this practice works</h2>
+          <ul>
+            <li>{assessment.mode === "oral-reading" ? "Read the original passage aloud for up to one minute." : "Answer 8 short, original practice questions."}</li>
+            <li>This is practice, so take your time and do your best.</li>
+            {assessment.adultHelp && <li>A grown-up helper can sit nearby.</li>}
+          </ul>
+        </div>
+        <button className="button button-primary button-large" onClick={begin}>Let&apos;s go <span aria-hidden="true">→</span></button>
+        <p className="fine-print">Results on this device are practice metrics—not official test scores.</p>
+      </section>
+    );
+  }
+
+  if (stage === "result") {
+    const percentage = Math.round((correct / Math.max(1, items.length)) * 100);
+    return (
+      <section className="practice-panel result-panel" aria-live="polite">
+        <div className="celebration" aria-hidden="true">✦ ★ ✦</div>
+        <p className="eyebrow">Adventure complete</p>
+        <h1>Nice, steady work!</h1>
+        {assessment.mode === "oral-reading" ? (
+          <p className="big-result"><strong>{Number(wordsRead || 0)}</strong><span>words read accurately</span></p>
+        ) : (
+          <p className="big-result"><strong>{correct} of {items.length}</strong><span>correct · {percentage}% practice accuracy</span></p>
+        )}
+        <p>You practiced for {Math.max(1, elapsed)} seconds. Your result is saved only in this browser while you are a guest.</p>
+        <div className="result-actions">
+          <button className="button button-primary" onClick={begin}>Practice again</button>
+          <Link className="button button-quiet" href={`/?grade=${grade}`}>Choose another activity</Link>
+        </div>
+      </section>
+    );
+  }
+
+  if (assessment.mode === "oral-reading") {
+    return (
+      <section className="practice-panel oral-panel">
+        <div className="practice-progress"><span>Read aloud</span><span aria-label={`${elapsed} seconds elapsed`}>{Math.min(elapsed, 60)} sec</span></div>
+        <h1>{passage.title}</h1>
+        <p className="reading-passage">{passage.text}</p>
+        {!readingDone ? (
+          <button className="button button-primary" onClick={() => setReadingDone(true)}>I&apos;m done reading</button>
+        ) : (
+          <div className="self-score">
+            <label htmlFor="words-read">With a grown-up, enter how many words were read correctly (up to {passage.wordCount}).</label>
+            <input id="words-read" type="number" min="0" max={passage.wordCount} value={wordsRead} onChange={(event) => setWordsRead(event.target.value)} />
+            <button className="button button-primary" disabled={wordsRead === "" || Number(wordsRead) > passage.wordCount} onClick={() => finish()}>See my result</button>
+          </div>
+        )}
+      </section>
+    );
+  }
+
+  return (
+    <section className="practice-panel question-panel">
+      <div className="practice-progress">
+        <span>Question {index + 1} of {items.length}</span>
+        <span>{Math.round(((index + 1) / items.length) * 100)}%</span>
+      </div>
+      <div className="progress-track" aria-hidden="true"><span style={{ width: `${((index + 1) / items.length) * 100}%` }} /></div>
+      {current?.speak && <button className="listen-button" onClick={() => speak(current.speak!)} aria-label="Listen to the question">🔊 Listen</button>}
+      {current?.context && <p className="question-context">{current.context}</p>}
+      <h1 className="question-prompt">{current?.prompt}</h1>
+      {current?.choices ? (
+        <div className="choice-grid" role="group" aria-label="Answer choices">
+          {current.choices.map((choice) => (
+            <button key={choice} className={answer === choice ? "choice selected" : "choice"} onClick={() => setAnswer(choice)} aria-pressed={answer === choice}>{choice}</button>
+          ))}
+        </div>
+      ) : (
+        <label className="answer-label">Your answer
+          <input ref={inputRef} className="answer-input" value={answer} onChange={(event) => setAnswer(event.target.value)} onKeyDown={(event) => event.key === "Enter" && submitAnswer()} autoComplete="off" inputMode={assessment.domain === "Math" ? "numeric" : "text"} />
+        </label>
+      )}
+      <button className="button button-primary button-large" disabled={!answer.trim() || showFeedback} onClick={submitAnswer}>Check answer</button>
+      {showFeedback && <div className="feedback" role="status">Answer saved. Keep going!</div>}
+    </section>
+  );
+}
