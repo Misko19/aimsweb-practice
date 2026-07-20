@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import type { Assessment, Grade } from "@/lib/assessments";
 import { generatePracticeItems, isCorrectAnswer, oralPassageForGrade, writingPromptForGrade } from "@/lib/practice";
+import { useListeningAudio } from "./useListeningAudio";
 
 type Stage = "intro" | "active" | "result";
 
@@ -39,6 +40,7 @@ export function PracticeSession({ assessment, grade, childId }: Props) {
   const feedbackTimeout = useRef<number | undefined>(undefined);
   const passage = useMemo(() => oralPassageForGrade(grade), [grade]);
   const current = items[index];
+  const listeningAudio = useListeningAudio();
 
   useEffect(() => {
     if (stage !== "active") return;
@@ -56,12 +58,11 @@ export function PracticeSession({ assessment, grade, childId }: Props) {
 
   useEffect(() => () => {
     if (feedbackTimeout.current !== undefined) window.clearTimeout(feedbackTimeout.current);
-    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
   }, []);
 
   function begin() {
     if (feedbackTimeout.current !== undefined) window.clearTimeout(feedbackTimeout.current);
-    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    listeningAudio.stop();
     submitLocked.current = false;
     setItems(generatePracticeItems(assessment, grade));
     setIndex(0);
@@ -81,14 +82,9 @@ export function PracticeSession({ assessment, grade, childId }: Props) {
     setStage("active");
   }
 
-  function speak(text: string) {
-    if (!("speechSynthesis" in window)) return;
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(new SpeechSynthesisUtterance(text));
-  }
-
   function submitAnswer() {
     if (submitLocked.current || !current || !answer.trim()) return;
+    listeningAudio.stop();
     submitLocked.current = true;
     const wasCorrect = isCorrectAnswer(answer, current.answer);
     if (wasCorrect) setCorrect((value) => value + 1);
@@ -103,7 +99,7 @@ export function PracticeSession({ assessment, grade, childId }: Props) {
   }
 
   function finish(finalCorrect = correct) {
-    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    listeningAudio.stop();
     const oralCount = Number(wordsRead);
     const writtenWords = wordCount(writing);
     if (assessment.mode === "oral-reading" && (!Number.isInteger(oralCount) || oralCount < 0 || oralCount > passage.wordCount)) return;
@@ -246,7 +242,8 @@ export function PracticeSession({ assessment, grade, childId }: Props) {
         <span>{Math.round(((index + 1) / items.length) * 100)}%</span>
       </div>
       <div className="progress-track" aria-hidden="true"><span style={{ width: `${((index + 1) / items.length) * 100}%` }} /></div>
-      {current?.speak && <button className="listen-button" onClick={() => speak(current.speak!)} aria-label="Listen to the question">🔊 Listen</button>}
+      {current?.speak && current.audioCue && <button className="listen-button" disabled={listeningAudio.status === "loading"} onClick={() => listeningAudio.play(current.audioCue!, current.speak!)} aria-label="Listen to the question">🔊 {listeningAudio.status === "loading" ? "Loading…" : listeningAudio.status === "playing" || listeningAudio.status === "fallback" ? "Playing…" : "Listen"}</button>}
+      {listeningAudio.status === "error" && <p className="fine-print" role="status">Audio is unavailable right now. Ask a grown-up to read the prompt.</p>}
       {current?.context && <p className="question-context">{current.context}</p>}
       <h1 className="question-prompt">{current?.prompt}</h1>
       {current?.choices ? (

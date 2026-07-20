@@ -1,4 +1,10 @@
 import type { Assessment, Grade } from "./assessments";
+import {
+  SPELLING_WORDS,
+  WINDOW_GARDEN_PASSAGE,
+  listeningCueId,
+  type ListeningAudioCueId,
+} from "./listening-audio";
 
 export type PracticeItem = {
   id: string;
@@ -8,6 +14,7 @@ export type PracticeItem = {
   choices?: string[];
   answer: string;
   speak?: string;
+  audioCue?: ListeningAudioCueId;
 };
 
 export type OralPassage = {
@@ -64,7 +71,7 @@ const wordsByLevel: Record<"early" | "middle" | "advanced", readonly (readonly [
 const passages = {
   early: {
     title: "The Window Garden",
-    text: "Maya planted three bean seeds in a pot by the window. Each morning, she checked the dark soil. On Friday, a green loop pushed into the light. Maya drew the tiny sprout in her notebook. She measured it every day and turned the pot so each side could face the sun. Soon, broad leaves reached over the rim.",
+    text: WINDOW_GARDEN_PASSAGE,
   },
   middle: {
     title: "A Library for Tools",
@@ -254,11 +261,11 @@ function readingItem(slug: string, grade: Grade, id: string, rng: Rng): Practice
       ["fish", "fan", "rain", "goat"],
     ] as const;
     const [target, answer, ...others] = pick(sets, rng);
-    return item(id, `Which word begins with the same sound as “${target}”?`, answer, shuffle([answer, ...others], rng), { speak: target });
+    return item(id, `Which word begins with the same sound as “${target}”?`, answer, shuffle([answer, ...others], rng), { speak: target, audioCue: listeningCueId("initial-sounds", target) });
   }
   if (slug === "auditory-vocabulary" || slug === "vocabulary") {
     const [word, answer, wrongA, wrongB] = pick(wordsByLevel[level], rng);
-    return item(id, `What does “${word}” mean?`, answer, shuffle([answer, wrongA, wrongB], rng), { speak: word });
+    return item(id, `What does “${word}” mean?`, answer, shuffle([answer, wrongA, wrongB], rng), { speak: word, audioCue: listeningCueId("vocabulary", word, level) });
   }
   if (slug === "letter-naming") {
     const letter = pick("BCDFGHJKLMNPRSTVWYZ".split(""), rng);
@@ -266,11 +273,11 @@ function readingItem(slug: string, grade: Grade, id: string, rng: Rng): Practice
   }
   if (slug === "phoneme-segmentation") {
     const values = pick([["ship", "3"], ["map", "3"], ["stop", "4"], ["fish", "3"], ["moon", "3"], ["chat", "3"], ["frog", "4"], ["sun", "3"]] as const, rng);
-    return item(id, `How many separate sounds do you hear in “${values[0]}”?`, values[1], ["2", "3", "4"], { speak: values[0] });
+    return item(id, `How many separate sounds do you hear in “${values[0]}”?`, values[1], ["2", "3", "4"], { speak: values[0], audioCue: listeningCueId("phoneme-segmentation", values[0]) });
   }
   if (slug === "spelling") {
-    const word = pick(level === "early" ? ["ship", "green", "play", "jump", "bright", "float", "smile", "train"] : level === "middle" ? ["journey", "separate", "curious", "necessary", "calendar", "favorite", "mystery", "exercise"] : ["conscientious", "accommodate", "rhythm", "perseverance", "indispensable", "entrepreneur", "questionnaire", "maintenance"], rng);
-    return item(id, "Listen, then type the word.", word, undefined, { speak: word });
+    const word = pick(SPELLING_WORDS[level], rng);
+    return item(id, "Listen, then type the word.", word, undefined, { speak: word, audioCue: listeningCueId("spelling", word, level) });
   }
   if (slug === "nonsense-word-fluency") {
     const word = pick(["lat", "mip", "sog", "vab", "nup", "fep", "rish", "dax"], rng);
@@ -285,7 +292,7 @@ function readingItem(slug: string, grade: Grade, id: string, rng: Rng): Practice
   const passage = passages[level];
   if (slug === "listening-comprehension") {
     const qa = pick(comprehensionQuestions.early, rng);
-    return item(id, qa[0], qa[1], shuffle([qa[1], qa[2], qa[3]], rng), { context: "Tap the speaker and listen without reading.", speak: passages.early.text });
+    return item(id, qa[0], qa[1], shuffle([qa[1], qa[2], qa[3]], rng), { context: "Tap the speaker and listen without reading.", speak: passages.early.text, audioCue: listeningCueId("listening-comprehension", "the-window-garden") });
   }
   if (slug === "reading-comprehension-progress") {
     const qa = pick(progressQuestions, rng);

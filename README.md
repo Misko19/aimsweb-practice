@@ -26,6 +26,16 @@ BETTER_AUTH_URL=http://192.168.1.14:3000 ALLOWED_DEV_ORIGINS=192.168.1.14 npm ru
 
 Replace `192.168.1.14` with the development computer’s current LAN address. `ALLOWED_DEV_ORIGINS` accepts comma-separated bare hostnames or IP addresses without schemes, ports, paths, or wildcards. `BETTER_AUTH_URL` must use the same browser-visible origin so parent sign-in and sign-up pass origin validation.
 
+## Listening audio
+
+Listening cues are pre-generated as static WAV files with `gemini-3.1-flash-tts-preview` and the Erinome voice. The API key is used only by the offline generator and is never sent to the browser. To regenerate missing assets after adding `GEMINI_API_KEY` to `.env`:
+
+```bash
+npm run audio:generate
+```
+
+The generator resumes existing files, follows a free-tier-safe request cadence, retries transient failures, and writes a SHA-256 manifest beside the audio. Use `npm run audio:generate -- --force` only when every cue should be replaced.
+
 ## Quality checks
 
 ```bash
