@@ -24,7 +24,7 @@ export default function PrivacyPage() {
           <p>Saved data provides login, nickname-only child profiles, practice history, progress summaries, export, and deletion. It is not used for advertising, public profiles, social features, official aimswebPlus scoring, or sale of personal information.</p>
 
           <h2>Sharing and retention</h2>
-          <p>This reference implementation includes no advertising, behavioral analytics, session replay, or browser-side social plug-ins. A production operator must disclose and contractually review every hosting, email, logging, and database provider it uses. Cloud profile data remains until the parent deletes the child profile or parent account; those actions remove the associated records from the active database immediately.</p>
+          <p>This reference implementation includes no advertising, behavioral analytics, session replay, or browser-side social plug-ins. A production operator must disclose and contractually review every hosting, email, logging, and database provider it uses. Cloud profile data remains until the parent deletes the child profile or parent account; those actions remove the associated records from the active database immediately. To bound storage, each child retains the 1,000 most recent cloud attempts.</p>
 
           <h2>Parent choices</h2>
           <p>From the parent dashboard, a parent can download saved account data, delete an individual child and that child&apos;s history, or permanently delete the entire account. Parents can stop cloud collection by using guest practice instead.</p>

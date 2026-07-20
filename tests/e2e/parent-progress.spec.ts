@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import Database from "better-sqlite3";
 
 test("parent creates a child and sees saved practice progress", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "chromium", "account flow runs once on desktop Chromium");
@@ -17,7 +18,12 @@ test("parent creates a child and sees saved practice progress", async ({ page },
   await page.getByRole("button", { name: "Save profile" }).click();
   const childCard = page.getByRole("article").filter({ hasText: "Sunny" });
   await expect(childCard).toBeVisible();
-  await childCard.getByRole("link", { name: "Practice as Sunny" }).click();
+  const practiceLink = childCard.getByRole("link", { name: "Practice as Sunny" });
+  const practiceHref = await practiceLink.getAttribute("href");
+  const childId = new URL(practiceHref!, page.url()).searchParams.get("child")!;
+  await practiceLink.click();
+  await expect(page.getByText("Profile tracking")).toBeVisible();
+  await expect(page.getByLabel("Grade level")).toBeDisabled();
 
   const vocabularyCard = page.getByRole("article").filter({ hasText: "Vocabulary" });
   await vocabularyCard.getByRole("link", { name: /Start practice/ }).click();
@@ -49,4 +55,13 @@ test("parent creates a child and sees saved practice progress", async ({ page },
   await page.getByLabel("Type DELETE to confirm").fill("DELETE");
   await page.getByRole("button", { name: "Permanently delete" }).click();
   await expect(page).toHaveURL("/");
+  const database = new Database(process.env.DATABASE_PATH ?? "data/brightpath.db", { readonly: true });
+  try {
+    const childRows = database.prepare("select count(*) as value from child_profile where id = ?").get(childId) as { value: number };
+    const attemptRows = database.prepare("select count(*) as value from practice_attempt where child_profile_id = ?").get(childId) as { value: number };
+    expect(childRows.value).toBe(0);
+    expect(attemptRows.value).toBe(0);
+  } finally {
+    database.close();
+  }
 });

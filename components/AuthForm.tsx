@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import { PRIVACY_VERSION } from "@/lib/privacy";
 
 export function AuthForm({ mode }: { mode: "login" | "signup" }) {
   const router = useRouter();
@@ -28,8 +29,12 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
         return;
       }
       if (signup) {
-        const consent = await fetch("/api/parent/consent", { method: "POST" });
-        if (!consent.ok) throw new Error("Your account was created, but privacy acceptance could not be saved.");
+        const consent = await fetch("/api/parent/consent", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ accepted: true, privacyVersion: PRIVACY_VERSION, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC" }),
+        });
+        if (!consent.ok) { router.push("/parent/consent"); return; }
       }
       router.push("/parent/dashboard");
       router.refresh();

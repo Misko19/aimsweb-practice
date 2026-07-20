@@ -13,6 +13,7 @@ export const parentSettings = sqliteTable("parent_settings", {
     .references(() => authSchema.user.id, { onDelete: "cascade" }),
   privacyVersion: text("privacy_version").notNull(),
   privacyAcceptedAt: timestamp("privacy_accepted_at").notNull(),
+  timezone: text("timezone").default("UTC").notNull(),
   createdAt: timestamp("created_at").default(sql`(cast(unixepoch('subsecond') * 1000 as integer))`).notNull(),
   updatedAt: timestamp("updated_at").default(sql`(cast(unixepoch('subsecond') * 1000 as integer))`).notNull(),
 });

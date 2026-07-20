@@ -15,8 +15,9 @@ export function HomePage({ initialGrade = "2", childId }: { initialGrade?: Grade
   );
 
   function changeGrade(next: Grade) {
+    if (childId) return;
     setGrade(next);
-    window.history.replaceState(null, "", `/?grade=${next}`);
+    window.history.replaceState(null, "", "/?grade=" + next);
   }
 
   return (
@@ -24,7 +25,7 @@ export function HomePage({ initialGrade = "2", childId }: { initialGrade?: Grade
       <header className="site-header">
         <Brand />
         <nav aria-label="Main navigation">
-          <span className="guest-pill">Guest mode</span>
+          <span className="guest-pill">{childId ? "Profile tracking" : "Guest mode"}</span>
           <Link className="button button-quiet" href={childId ? "/parent/dashboard" : "/parent"}>{childId ? "Parent dashboard" : "Parent area"}</Link>
         </nav>
       </header>
@@ -33,8 +34,8 @@ export function HomePage({ initialGrade = "2", childId }: { initialGrade?: Grade
           <div className="hero-copy">
             <p className="eyebrow">Small steps. Bright progress.</p>
             <h1>Build brave reading and math skills.</h1>
-            <p className="hero-lede">Choose a grade, pick a skill, and take a short practice adventure—no account needed.</p>
-            <div className="privacy-note"><span aria-hidden="true">🔒</span> Guest practice stays on this device.</div>
+            <p className="hero-lede">{childId ? "Pick a skill for this profile’s grade and take a short practice adventure." : "Choose a grade, pick a skill, and take a short practice adventure—no account needed."}</p>
+            <div className="privacy-note"><span aria-hidden="true">🔒</span> {childId ? "Completed practice is saved to this child profile and this device." : "Guest practice stays on this device."}</div>
           </div>
           <div className="hero-art" aria-hidden="true">
             <div className="planet">2<span>+3</span></div>
@@ -52,7 +53,7 @@ export function HomePage({ initialGrade = "2", childId }: { initialGrade?: Grade
             </div>
             <label className="grade-select-label">
               Grade level
-              <select value={grade} onChange={(event) => changeGrade(event.target.value as Grade)}>
+              <select value={grade} disabled={Boolean(childId)} onChange={(event) => changeGrade(event.target.value as Grade)}>
                 {GRADES.map((value) => <option key={value} value={value}>{gradeLabel(value)}</option>)}
               </select>
             </label>
@@ -60,11 +61,12 @@ export function HomePage({ initialGrade = "2", childId }: { initialGrade?: Grade
 
           <div className="grade-chips" role="group" aria-label="Quick grade choices">
             {GRADES.map((value) => (
-              <button className={value === grade ? "grade-chip selected" : "grade-chip"} key={value} onClick={() => changeGrade(value)} aria-pressed={value === grade}>
+              <button className={value === grade ? "grade-chip selected" : "grade-chip"} key={value} disabled={Boolean(childId)} onClick={() => changeGrade(value)} aria-pressed={value === grade}>
                 {value === "pre-k" ? "Pre-K" : value === "k" ? "K" : value}
               </button>
             ))}
           </div>
+          {childId && <p className="fine-print">Grade is locked to this child profile. Change the profile’s grade from the parent dashboard.</p>}
         </section>
 
         <section className="activities-section" aria-labelledby="activities-heading">

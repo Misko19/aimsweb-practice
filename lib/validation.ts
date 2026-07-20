@@ -1,7 +1,16 @@
 import { z } from "zod";
 import { GRADES } from "./assessments";
+import { PRIVACY_VERSION } from "./privacy";
 
 export const avatars = ["fox", "owl", "otter", "turtle"] as const;
+
+export const consentInput = z.object({
+  accepted: z.literal(true),
+  privacyVersion: z.literal(PRIVACY_VERSION),
+  timezone: z.string().min(1).max(100).refine((value) => {
+    try { new Intl.DateTimeFormat("en-US", { timeZone: value }).format(); return true; } catch { return false; }
+  }, "Enter a valid timezone."),
+});
 
 export const childProfileInput = z.object({
   nickname: z.string().trim().min(1, "Enter a nickname.").max(30, "Keep the nickname under 30 characters."),
