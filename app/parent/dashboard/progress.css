@@ -1,0 +1,8 @@
+.progress-history { margin-top: 2rem; padding: 1.5rem; border: 1px solid var(--border); border-radius: 22px; background: white; }
+.progress-history h2 { margin: .2rem 0; font-size: 1.7rem; }
+.progress-history > div > p:not(.eyebrow) { margin: .3rem 0 1.2rem; color: var(--muted); }
+.table-wrap { overflow-x: auto; }
+.progress-history table { width: 100%; border-collapse: collapse; }
+.progress-history th, .progress-history td { padding: .8rem; border-bottom: 1px solid var(--border); text-align: left; white-space: nowrap; }
+.progress-history th { color: var(--muted); font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; }
+.empty-history { padding: 1.5rem; border-radius: 14px; color: var(--muted); background: #f6f7f9; }

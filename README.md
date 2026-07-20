@@ -7,11 +7,13 @@ It is not affiliated with Pearson. All practice content is original, and results
 ## Local development
 
 ```bash
+cp .env.example .env.local
 npm install
+npm run db:migrate
 npm run dev
 ```
 
-Open `http://localhost:3000`.
+Open `http://localhost:3000`. The default `DATABASE_PATH` uses a local SQLite database under `data/`; database files are ignored by Git. Better Auth supplies a development-only default secret, but refuses that default in production. A production deployment must set a random `BETTER_AUTH_SECRET` of at least 32 characters and its canonical `BETTER_AUTH_URL`.
 
 ## Quality checks
 
@@ -21,7 +23,7 @@ npm run typecheck
 npm test
 npm run build
 npx playwright install chromium
-npm run test:e2e -- --project=chromium
+npm run test:e2e -- --project=chromium --project=mobile
 ```
 
 ## Research and safety

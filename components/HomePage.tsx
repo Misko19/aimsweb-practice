@@ -5,7 +5,7 @@ import Link from "next/link";
 import { GRADES, assessmentsForGrade, gradeLabel, type Domain, type Grade } from "@/lib/assessments";
 import { Brand } from "./Brand";
 
-export function HomePage({ initialGrade = "2" }: { initialGrade?: Grade }) {
+export function HomePage({ initialGrade = "2", childId }: { initialGrade?: Grade; childId?: string }) {
   const [grade, setGrade] = useState<Grade>(initialGrade);
   const [domain, setDomain] = useState<Domain | "All">("All");
 
@@ -25,7 +25,7 @@ export function HomePage({ initialGrade = "2" }: { initialGrade?: Grade }) {
         <Brand />
         <nav aria-label="Main navigation">
           <span className="guest-pill">Guest mode</span>
-          <Link className="button button-quiet" href="/about">For grown-ups</Link>
+          <Link className="button button-quiet" href={childId ? "/parent/dashboard" : "/parent"}>{childId ? "Parent dashboard" : "Parent area"}</Link>
         </nav>
       </header>
       <main id="main-content">
@@ -94,7 +94,7 @@ export function HomePage({ initialGrade = "2" }: { initialGrade?: Grade }) {
                   {assessment.adultHelp && <span>Adult helper useful</span>}
                   {assessment.benchmarkOnly && <span>Screening-style skill</span>}
                 </div>
-                <Link className="button button-card" href={`/practice/${assessment.slug}?grade=${grade}`}>Start practice <span aria-hidden="true">→</span></Link>
+                <Link className="button button-card" href={`/practice/${assessment.slug}?grade=${grade}${childId ? `&child=${encodeURIComponent(childId)}` : ""}`}>Start practice <span aria-hidden="true">→</span></Link>
               </article>
             ))}
           </div>
@@ -109,7 +109,7 @@ export function HomePage({ initialGrade = "2" }: { initialGrade?: Grade }) {
           <p>BrightPath uses original practice questions aligned to broad skills. It is not affiliated with Pearson, and practice results are not official aimswebPlus scores, percentiles, or predictions.</p>
         </section>
       </main>
-      <footer><Brand /><p>Independent, privacy-first skill practice.</p><Link href="/about">About &amp; research</Link></footer>
+      <footer><Brand /><p>Independent, privacy-first skill practice.</p><span><Link href="/about">About &amp; research</Link> · <Link href="/privacy">Privacy</Link></span></footer>
     </>
   );
 }

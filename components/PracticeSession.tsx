@@ -7,9 +7,20 @@ import { generatePracticeItems, isCorrectAnswer, oralPassageForGrade } from "@/l
 
 type Stage = "intro" | "active" | "result";
 
-type Props = { assessment: Assessment; grade: Grade };
+type Props = { assessment: Assessment; grade: Grade; childId?: string };
 
-export function PracticeSession({ assessment, grade }: Props) {
+type SavedAttempt = {
+  id: string;
+  assessment: string;
+  grade: Grade;
+  correct: number;
+  total: number;
+  durationSeconds: number;
+  completedAt: string;
+  kind: "accuracy" | "words-read";
+};
+
+export function PracticeSession({ assessment, grade, childId }: Props) {
   const [stage, setStage] = useState<Stage>("intro");
   const [items, setItems] = useState(() => generatePracticeItems(assessment, grade));
   const [index, setIndex] = useState(0);
@@ -19,6 +30,7 @@ export function PracticeSession({ assessment, grade }: Props) {
   const [elapsed, setElapsed] = useState(0);
   const [wordsRead, setWordsRead] = useState("");
   const [readingDone, setReadingDone] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<"local" | "saving" | "saved" | "error">("local");
   const startedAt = useRef(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const submitLocked = useRef(false);
@@ -50,6 +62,7 @@ export function PracticeSession({ assessment, grade }: Props) {
     setElapsed(0);
     setWordsRead("");
     setReadingDone(false);
+    setSaveStatus(childId ? "saving" : "local");
     startedAt.current = Date.now();
     setStage("active");
   }
@@ -78,7 +91,7 @@ export function PracticeSession({ assessment, grade }: Props) {
   function finish(finalCorrect = correct) {
     const oralCount = Number(wordsRead);
     if (assessment.mode === "oral-reading" && (!Number.isInteger(oralCount) || oralCount < 0 || oralCount > passage.wordCount)) return;
-    const result = {
+    const result: SavedAttempt = {
       id: localAttemptId(),
       assessment: assessment.slug,
       grade,
@@ -96,6 +109,31 @@ export function PracticeSession({ assessment, grade }: Props) {
     }
     setCorrect(finalCorrect);
     setStage("result");
+    if (childId) void syncAttempt(result);
+  }
+
+  async function syncAttempt(result: SavedAttempt) {
+    setSaveStatus("saving");
+    try {
+      const response = await fetch("/api/attempts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          clientAttemptId: result.id,
+          childProfileId: childId,
+          assessmentSlug: result.assessment,
+          grade: result.grade,
+          correct: result.correct,
+          total: result.total,
+          durationSeconds: result.durationSeconds,
+          completedAt: result.completedAt,
+          kind: result.kind,
+        }),
+      });
+      setSaveStatus(response.ok ? "saved" : "error");
+    } catch {
+      setSaveStatus("error");
+    }
   }
 
   if (stage === "intro") {
@@ -131,10 +169,10 @@ export function PracticeSession({ assessment, grade }: Props) {
         ) : (
           <p className="big-result"><strong>{correct} of {items.length}</strong><span>correct · {percentage}% practice accuracy</span></p>
         )}
-        <p>You practiced for {Math.max(1, elapsed)} seconds. Your result is saved only in this browser while you are a guest.</p>
+        <p>You practiced for {Math.max(1, elapsed)} seconds. {childId ? (saveStatus === "saved" ? "Progress saved to this child profile." : saveStatus === "error" ? "Cloud save failed; the result is still on this device." : "Saving progress…") : "Your result is saved only in this browser while you are a guest."}</p>
         <div className="result-actions">
           <button className="button button-primary" onClick={begin}>Practice again</button>
-          <Link className="button button-quiet" href={`/?grade=${grade}`}>Choose another activity</Link>
+          <Link className="button button-quiet" href={`/?grade=${grade}${childId ? `&child=${encodeURIComponent(childId)}` : ""}`}>Choose another activity</Link>
         </div>
       </section>
     );
