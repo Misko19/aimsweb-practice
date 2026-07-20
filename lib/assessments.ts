@@ -246,7 +246,7 @@ export const ASSESSMENTS: readonly Assessment[] = [
     name: "Quantity Difference Fluency",
     abbreviation: "QDF",
     domain: "Math",
-    grades: ["pre-k", "k"],
+    grades: ["k"],
     description: "Tell how many more objects one group has.",
     officialTime: "1 min",
     practiceTime: "3 min",

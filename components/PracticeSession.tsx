@@ -30,6 +30,7 @@ export function PracticeSession({ assessment, grade, childId }: Props) {
   const [elapsed, setElapsed] = useState(0);
   const [wordsRead, setWordsRead] = useState("");
   const [writing, setWriting] = useState("");
+  const [writingPrompt, setWritingPrompt] = useState(() => writingPromptForGrade(grade));
   const [readingDone, setReadingDone] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"local" | "saving" | "saved" | "consent" | "rate-limit" | "error">("local");
   const startedAt = useRef(0);
@@ -69,6 +70,11 @@ export function PracticeSession({ assessment, grade, childId }: Props) {
     setElapsed(0);
     setWordsRead("");
     setWriting("");
+    setWritingPrompt((current) => {
+      let next = writingPromptForGrade(grade);
+      for (let attempt = 0; attempt < 5 && next === current; attempt += 1) next = writingPromptForGrade(grade);
+      return next;
+    });
     setReadingDone(false);
     setSaveStatus(childId ? "saving" : "local");
     startedAt.current = Date.now();
@@ -97,6 +103,7 @@ export function PracticeSession({ assessment, grade, childId }: Props) {
   }
 
   function finish(finalCorrect = correct) {
+    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
     const oralCount = Number(wordsRead);
     const writtenWords = wordCount(writing);
     if (assessment.mode === "oral-reading" && (!Number.isInteger(oralCount) || oralCount < 0 || oralCount > passage.wordCount)) return;
@@ -110,7 +117,7 @@ export function PracticeSession({ assessment, grade, childId }: Props) {
       grade,
       correct: resultCorrect,
       total: resultTotal,
-      durationSeconds: Math.max(1, Math.floor((Date.now() - startedAt.current) / 1000)),
+      durationSeconds: Math.min(3_600, Math.max(1, Math.floor((Date.now() - startedAt.current) / 1000))),
       completedAt: new Date().toISOString(),
       kind,
     };
@@ -200,12 +207,12 @@ export function PracticeSession({ assessment, grade, childId }: Props) {
     const words = wordCount(writing);
     return (
       <section className="practice-panel writing-panel">
-        <div className="practice-progress"><span>Write your response</span><span aria-label={elapsed + " seconds elapsed"}>{Math.floor(elapsed / 60)}:{String(elapsed % 60).padStart(2, "0")}</span></div>
+        <div className="practice-progress"><span>Write your response</span><span role="timer" aria-label={elapsed + " seconds elapsed"}>{Math.floor(elapsed / 60)}:{String(elapsed % 60).padStart(2, "0")}</span></div>
         <p className="eyebrow">Original writing prompt</p>
-        <h1>{writingPromptForGrade(grade)}</h1>
+        <h1>{writingPrompt}</h1>
         <label className="answer-label" htmlFor="writing-response">Your response</label>
-        <textarea id="writing-response" className="writing-input" value={writing} onChange={(event) => setWriting(event.target.value)} rows={10} />
-        <p aria-live="polite">{words} {words === 1 ? "word" : "words"} written</p>
+        <textarea id="writing-response" className="writing-input" aria-describedby="writing-count" value={writing} onChange={(event) => setWriting(event.target.value)} rows={10} />
+        <p id="writing-count">{words} {words === 1 ? "word" : "words"} written</p>
         <button className="button button-primary button-large" disabled={words === 0} onClick={() => finish()}>Finish writing</button>
       </section>
     );
@@ -216,7 +223,7 @@ export function PracticeSession({ assessment, grade, childId }: Props) {
     const validOralCount = wordsRead !== "" && Number.isInteger(oralCount) && oralCount >= 0 && oralCount <= passage.wordCount;
     return (
       <section className="practice-panel oral-panel">
-        <div className="practice-progress"><span>Read aloud</span><span aria-label={`${elapsed} seconds elapsed`}>{Math.min(elapsed, 60)} sec</span></div>
+        <div className="practice-progress"><span>Read aloud</span><span role="timer" aria-label={elapsed + " seconds elapsed"}>{Math.min(elapsed, 60)} sec</span></div>
         <h1>{passage.title}</h1>
         <p className="reading-passage">{passage.text}</p>
         {!readingDone ? (

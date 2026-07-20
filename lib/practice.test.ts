@@ -11,16 +11,19 @@ function seeded(seed: number) {
 }
 
 describe("practice item generation", () => {
-  it("generates a full, unique set for every question activity", () => {
+  it("generates a full, unique set for every question activity and supported grade", () => {
     for (const assessment of ASSESSMENTS.filter(({ mode }) => mode === "questions")) {
-      const questions = generatePracticeItems(assessment, assessment.grades[0], 8, seeded(42));
-      expect(questions.length, assessment.slug).toBeGreaterThanOrEqual(5);
-      expect(questions.length, assessment.slug).toBeLessThanOrEqual(8);
-      expect(new Set(questions.map((question) => question.prompt + question.context + question.answer)).size).toBe(questions.length);
-      for (const question of questions) {
-        expect(question.prompt).toBeTruthy();
-        expect(question.answer).toBeTruthy();
-        if (question.choices) expect(question.choices).toContain(question.answer);
+      for (const [gradeIndex, grade] of assessment.grades.entries()) {
+        const questions = generatePracticeItems(assessment, grade, 8, seeded(42 + gradeIndex));
+        const label = `${assessment.slug}:${grade}`;
+        expect(questions.length, label).toBeGreaterThanOrEqual(5);
+        expect(questions.length, label).toBeLessThanOrEqual(8);
+        expect(new Set(questions.map((question) => question.prompt + question.context + question.answer)).size, label).toBe(questions.length);
+        for (const question of questions) {
+          expect(question.prompt).toBeTruthy();
+          expect(question.answer).toBeTruthy();
+          if (question.choices) expect(question.choices).toContain(question.answer);
+        }
       }
     }
   });
@@ -46,7 +49,8 @@ describe("practice item generation", () => {
     expect(oralPassageForGrade("2").wordCount).toBeGreaterThan(40);
     expect(oralPassageForGrade("7").text).not.toBe(oralPassageForGrade("2").text);
     expect(oralPassageForGrade("10").text).not.toBe(oralPassageForGrade("7").text);
-    expect(writingPromptForGrade("2")).not.toBe(writingPromptForGrade("7"));
-    expect(writingPromptForGrade("7")).not.toBe(writingPromptForGrade("10"));
+    expect(writingPromptForGrade("1", () => 0)).toBe("Describe a place where you like to learn.");
+    expect(writingPromptForGrade("1", () => 0.99)).toBe("Explain how to care for a plant.");
+    expect(writingPromptForGrade("2", () => 0)).not.toBe(writingPromptForGrade("7", () => 0));
   });
 });

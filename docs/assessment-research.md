@@ -25,6 +25,7 @@ Pearson's current assessment matrix covers Pre-K through Grade 12. Schools selec
 | Reading | Oral Reading Fluency | 1–12 | Adult-recorded; one-minute passages |
 | Reading | Vocabulary | 2–12 | Student online, untimed |
 | Reading | Reading Comprehension | 2–12 | Student online, untimed |
+| Reading | Reading Comprehension Progress Monitoring | 2–5 | Student online, 5 minutes |
 | Reading | Silent Reading Fluency | 4–12 | Student online; passage rates |
 | Reading classic | Reading Maze and Written Expression | 1–12 | Paper/pencil, brief timed measures |
 | Math | Quantity Total Fluency | Pre-K–K | Individual, 1 minute |

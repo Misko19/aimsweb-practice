@@ -111,6 +111,19 @@ const comprehensionQuestions: Record<"early" | "middle" | "advanced", readonly Q
   ],
 };
 
+const progressPassage = "A class built a small weather station beside the school garden. Each morning, two students recorded the temperature, cloud cover, and rainfall. After several weeks, they compared the notes with plant growth. The sunniest beds dried quickly, while a shaded bed stayed damp longer. The class used the pattern to adjust its watering plan and keep every bed healthy.";
+
+const progressQuestions: readonly QuestionTuple[] = [
+  ["Where did the class build its weather station?", "Beside the school garden", "On the school roof", "Inside the library"],
+  ["When did students record conditions?", "Each morning", "Once a month", "Every night"],
+  ["How many students recorded the weather?", "Two", "Ten", "One"],
+  ["What three conditions did they record?", "Temperature, clouds, and rainfall", "Wind, snow, and soil", "Sunrise, insects, and seeds"],
+  ["What did they compare the notes with?", "Plant growth", "Lunch choices", "Bus schedules"],
+  ["Which beds dried quickly?", "The sunniest beds", "The shaded bed", "Every bed"],
+  ["What stayed damp longer?", "A shaded bed", "The weather station", "The school roof"],
+  ["How did the class use the pattern?", "It adjusted the watering plan", "It removed the garden", "It stopped recording weather"],
+];
+
 const mazeQuestions: readonly QuestionTuple[] = [
   ["The rain stopped, so we ___ our walk.", "continued", "melted", "whispered"],
   ["Nia packed a snack ___ she left for practice.", "before", "unless", "although"],
@@ -122,14 +135,13 @@ const mazeQuestions: readonly QuestionTuple[] = [
   ["The new evidence helped ___ the scientist’s explanation.", "support", "conceal", "interrupt"],
 ];
 
-export function writingPromptForGrade(grade: Grade) {
+export function writingPromptForGrade(grade: Grade, rng: Rng = Math.random) {
   const prompts = levelForGrade(grade) === "early"
     ? ["Describe a place where you like to learn.", "Write about a time you helped someone.", "Imagine you found a tiny door. What happens next?", "Explain how to care for a plant."]
     : levelForGrade(grade) === "middle"
       ? ["Explain one way a community can share resources.", "Describe a challenge that taught you something.", "Should every student learn a practical skill? Explain.", "Write a story that begins with an unexpected message."]
       : ["Explain how a design choice can affect a community.", "Argue for one change that would improve daily life.", "Describe how new evidence can change a conclusion.", "Write about the tension between convenience and responsibility."];
-  const numeric = grade === "pre-k" || grade === "k" ? 0 : Number(grade);
-  return prompts[numeric % prompts.length]!;
+  return pick(prompts, rng);
 }
 
 function levelForGrade(grade: Grade) {
@@ -195,7 +207,13 @@ function mathItem(slug: string, grade: Grade, id: string, rng: Rng): PracticeIte
     const part = Math.max(1, Math.min(total - 1, b));
     return item(id, `${part} + ? = ${total}`, String(total - part));
   }
-  if (slug === "concepts-applications" || slug === "math-cap") {
+  if (slug === "math-cap") {
+    const x = 2 + Math.floor(rng() * Math.min(12, Math.max(4, Number(grade) + 3)));
+    const y = 2 + Math.floor(rng() * 9);
+    if (rng() > 0.5) return item(id, `${x} × ${y} = ?`, String(x * y));
+    return item(id, `A theater sets ${x} rows with ${y} seats in each row. How many seats are there?`, String(x * y));
+  }
+  if (slug === "concepts-applications") {
     if (grade === "pre-k" || grade === "k" || grade === "1") {
       const count = 2 + Math.floor(rng() * (grade === "1" ? 9 : 5));
       return item(id, `Kai has ${count} blocks and gets 1 more. How many blocks now?`, String(count + 1));
@@ -269,11 +287,15 @@ function readingItem(slug: string, grade: Grade, id: string, rng: Rng): Practice
     const qa = pick(comprehensionQuestions.early, rng);
     return item(id, qa[0], qa[1], shuffle([qa[1], qa[2], qa[3]], rng), { context: "Tap the speaker and listen without reading.", speak: passages.early.text });
   }
+  if (slug === "reading-comprehension-progress") {
+    const qa = pick(progressQuestions, rng);
+    return item(id, qa[0], qa[1], shuffle([qa[1], qa[2], qa[3]], rng), { context: progressPassage });
+  }
   if (slug === "reading-maze") {
     const qa = pick(mazeQuestions, rng);
     return item(id, qa[0], qa[1], shuffle([qa[1], qa[2], qa[3]], rng));
   }
-  if (slug === "silent-reading-fluency" || slug === "reading-comprehension" || slug === "reading-comprehension-progress") {
+  if (slug === "silent-reading-fluency" || slug === "reading-comprehension") {
     const qa = pick(comprehensionQuestions[level], rng);
     return item(id, qa[0], qa[1], shuffle([qa[1], qa[2], qa[3]], rng), { context: passage.text });
   }

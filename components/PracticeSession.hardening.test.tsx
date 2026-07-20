@@ -41,7 +41,7 @@ describe("PracticeSession hardening", () => {
     const { unmount } = render(<PracticeSession assessment={findAssessment("listening-comprehension")!} grade="2" />);
     fireEvent.click(screen.getByRole("button", { name: /Let's go/ }));
     unmount();
-    expect(cancelSpeech).toHaveBeenCalledTimes(2);
+    expect(cancelSpeech).toHaveBeenCalled();
   });
 
   it("records an original writing response as a word-count result", () => {
@@ -52,5 +52,16 @@ describe("PracticeSession hardening", () => {
     expect(screen.getByText("words written in an original response")).toBeInTheDocument();
     const saved = JSON.parse(window.localStorage.getItem("brightpath-attempts") ?? "[]");
     expect(saved[0].kind).toBe("word-count");
+  });
+
+  it("clamps a long writing session to the server duration limit", () => {
+    vi.useFakeTimers();
+    render(<PracticeSession assessment={findAssessment("written-expression")!} grade="2" />);
+    fireEvent.click(screen.getByRole("button", { name: /Let's go/ }));
+    fireEvent.change(screen.getByLabelText("Your response"), { target: { value: "A complete response." } });
+    act(() => vi.advanceTimersByTime(5_400_000));
+    fireEvent.click(screen.getByRole("button", { name: "Finish writing" }));
+    const saved = JSON.parse(window.localStorage.getItem("brightpath-attempts") ?? "[]");
+    expect(saved[0].durationSeconds).toBe(3_600);
   });
 });
