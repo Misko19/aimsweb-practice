@@ -7,11 +7,14 @@ It is not affiliated with Pearson. All practice content is original, and results
 ## Local development
 
 ```bash
+cp .env.example .env.local
+# Replace BETTER_AUTH_SECRET with a random 32+ character value
 npm install
+npm run db:migrate
 npm run dev
 ```
 
-Open `http://localhost:3000`.
+Open `http://localhost:3000`. The default `DATABASE_PATH` uses a local SQLite database under `data/`; database files are ignored by Git. The build fails closed unless `BETTER_AUTH_SECRET` contains a random value of at least 32 characters and `BETTER_AUTH_URL` contains the canonical app URL. Never reuse the example or test secrets in a deployment.
 
 ## Quality checks
 
@@ -21,7 +24,7 @@ npm run typecheck
 npm test
 npm run build
 npx playwright install chromium
-npm run test:e2e -- --project=chromium
+npm run test:e2e -- --project=chromium --project=mobile
 ```
 
 ## Research and safety

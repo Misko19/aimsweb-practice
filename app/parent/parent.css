@@ -1,0 +1,52 @@
+.auth-shell { min-height: calc(100vh - 78px); display: grid; padding: 3rem 1rem; place-items: start center; background: radial-gradient(circle at 20% 10%, #e7f8ed, transparent 30%), #faf9ff; }
+.auth-card { width: min(520px, 100%); padding: clamp(1.5rem, 5vw, 3rem); border: 1px solid var(--border); border-radius: 28px; background: white; box-shadow: var(--shadow); }
+.auth-card h1 { margin: .4rem 0; font-size: clamp(2.2rem, 7vw, 3.5rem); line-height: 1.05; letter-spacing: -.05em; }
+.auth-card > p { color: var(--muted); }
+.auth-form { display: grid; gap: 1.2rem; margin-top: 2rem; }
+.auth-form label:not(.consent-check), .child-form label:not(:has(input[type="radio"])) { display: grid; gap: .4rem; font-weight: 800; }
+.auth-form input:not([type="checkbox"]), .child-form input:not([type="radio"]) { min-height: 52px; padding: .65rem .8rem; border: 2px solid var(--border); border-radius: 12px; }
+.consent-check { display: grid; grid-template-columns: 24px 1fr; gap: .7rem; align-items: start; font-size: .9rem; }
+.consent-check input { width: 22px; height: 22px; }
+.form-error { padding: .75rem 1rem; border-radius: 10px; color: #8f261e; background: #ffebe9; font-weight: 750; }
+.auth-switch { text-align: center; }
+.auth-switch a { color: var(--purple-dark); font-weight: 850; }
+.privacy-fine { font-size: .8rem; }
+
+.dashboard-shell { width: min(1120px, calc(100% - 2rem)); min-height: calc(100vh - 78px); margin: 2.5rem auto 5rem; }
+.dashboard-heading { display: flex; align-items: end; justify-content: space-between; gap: 1.5rem; margin-bottom: 2rem; }
+.dashboard-heading h1 { margin: .25rem 0; font-size: clamp(2.3rem, 6vw, 4rem); line-height: 1; letter-spacing: -.05em; }
+.dashboard-heading p:not(.eyebrow) { margin: .3rem 0; color: var(--muted); }
+.dashboard-actions { display: flex; gap: .6rem; flex-wrap: wrap; }
+.child-form { margin-bottom: 2rem; padding: 1.5rem; border: 1px solid #d7d0f8; border-radius: 22px; background: #f6f3ff; }
+.child-form h2 { margin: 0; }
+.child-form > p { color: var(--muted); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.child-form fieldset { margin: 1.2rem 0; padding: 0; border: 0; }
+.child-form legend { margin-bottom: .5rem; font-weight: 850; }
+.avatar-options { display: flex; flex-wrap: wrap; gap: .6rem; }
+.avatar-options input { position: absolute; opacity: 0; }
+.avatar-options span { display: block; min-width: 105px; padding: .7rem; border: 2px solid var(--border); border-radius: 12px; text-align: center; background: white; cursor: pointer; text-transform: capitalize; font-weight: 750; }
+.avatar-options input:checked + span { border-color: var(--purple); color: var(--purple-dark); background: #ece8ff; }
+.avatar-options input:focus-visible + span { outline: 4px solid #1d70b7; outline-offset: 2px; }
+.form-actions { display: flex; gap: .6rem; }
+.children-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.child-card { display: flex; min-height: 390px; padding: 1.4rem; border: 1px solid var(--border); border-radius: 22px; flex-direction: column; background: white; box-shadow: 0 8px 24px rgb(25 35 55 / 7%); }
+.child-avatar { display: grid; width: 72px; height: 72px; place-items: center; border-radius: 22px; background: var(--mint); font-size: 2.4rem; }
+.child-card h2 { margin: 1rem 0 0; font-size: 1.6rem; }
+.child-card > div > p { margin: .1rem 0; color: var(--muted); }
+.child-card dl { display: grid; grid-template-columns: repeat(3, 1fr); gap: .4rem; margin: 1.4rem 0; }
+.child-card dl div { padding: .6rem .25rem; border-radius: 10px; text-align: center; background: #f6f7f9; }
+.child-card dt { color: var(--muted); font-size: .68rem; font-weight: 750; }
+.child-card dd { margin: .2rem 0 0; font-weight: 900; }
+.child-card .button { margin-top: auto; }
+.delete-link { min-height: 44px; margin-top: .4rem; border: 0; color: #8f261e; background: transparent; cursor: pointer; text-decoration: underline; }
+.privacy-controls { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 2rem; padding: 1.5rem; border-radius: 20px; background: var(--cream); }
+.privacy-controls h2 { margin: 0; }
+.privacy-controls p { margin: .3rem 0; color: var(--muted); }
+
+@media (max-width: 850px) { .children-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) {
+  .dashboard-heading, .privacy-controls { align-items: stretch; flex-direction: column; }
+  .form-row, .children-grid { grid-template-columns: 1fr; }
+  .child-card { min-height: 350px; }
+}

@@ -11,7 +11,12 @@ export default defineConfig({
     { name: "mobile", use: { ...devices["Pixel 7"] } },
   ],
   webServer: {
-    command: "npm run dev",
+    command: "npm run db:migrate && npm run dev",
+    env: {
+      ...process.env,
+      BETTER_AUTH_URL: "http://127.0.0.1:3000",
+      BETTER_AUTH_SECRET: "brightpath-e2e-only-secret-never-use-in-production",
+    },
     url: "http://127.0.0.1:3000",
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
