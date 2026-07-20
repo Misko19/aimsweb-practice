@@ -55,8 +55,9 @@ export const practiceAttempt = sqliteTable(
     createdAt: timestamp("created_at").default(sql`(cast(unixepoch('subsecond') * 1000 as integer))`).notNull(),
   },
   (table) => [
-    index("attempt_parent_child_idx").on(table.parentUserId, table.childProfileId),
-    index("attempt_child_completed_idx").on(table.childProfileId, table.completedAt),
+    index("attempt_parent_child_created_idx").on(table.parentUserId, table.childProfileId, table.createdAt),
+    index("attempt_child_created_idx").on(table.childProfileId, table.createdAt),
+    index("attempt_parent_created_idx").on(table.parentUserId, table.createdAt),
     uniqueIndex("attempt_parent_client_unique").on(table.parentUserId, table.clientAttemptId),
   ],
 );

@@ -10,6 +10,12 @@ describe("takeRateLimit", () => {
     expect(takeRateLimit("parent:attempt", 2, 60_000, 3_000)).toEqual({ allowed: false, retryAfterSeconds: 58 });
   });
 
+  it("keeps longer-window buckets when pruning short-window buckets", () => {
+    takeRateLimit("profile", 1, 3_600_000, 1_000);
+    for (let index = 0; index < 2_000; index += 1) takeRateLimit("attempt-" + index, 1, 60_000, 120_000);
+    expect(takeRateLimit("profile", 1, 3_600_000, 120_000).allowed).toBe(false);
+  });
+
   it("starts a fresh bucket after the window", () => {
     takeRateLimit("parent:attempt", 1, 1_000, 1_000);
     expect(takeRateLimit("parent:attempt", 1, 1_000, 2_000).allowed).toBe(true);

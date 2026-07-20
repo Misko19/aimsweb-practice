@@ -30,7 +30,7 @@ export function PracticeSession({ assessment, grade, childId }: Props) {
   const [elapsed, setElapsed] = useState(0);
   const [wordsRead, setWordsRead] = useState("");
   const [readingDone, setReadingDone] = useState(false);
-  const [saveStatus, setSaveStatus] = useState<"local" | "saving" | "saved" | "error">("local");
+  const [saveStatus, setSaveStatus] = useState<"local" | "saving" | "saved" | "consent" | "rate-limit" | "error">("local");
   const startedAt = useRef(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const submitLocked = useRef(false);
@@ -130,7 +130,10 @@ export function PracticeSession({ assessment, grade, childId }: Props) {
           kind: result.kind,
         }),
       });
-      setSaveStatus(response.ok ? "saved" : "error");
+      if (response.ok) setSaveStatus("saved");
+      else if (response.status === 403) setSaveStatus("consent");
+      else if (response.status === 429) setSaveStatus("rate-limit");
+      else setSaveStatus("error");
     } catch {
       setSaveStatus("error");
     }
@@ -169,7 +172,7 @@ export function PracticeSession({ assessment, grade, childId }: Props) {
         ) : (
           <p className="big-result"><strong>{correct} of {items.length}</strong><span>correct · {percentage}% practice accuracy</span></p>
         )}
-        <p>You practiced for {Math.max(1, elapsed)} seconds. {childId ? (saveStatus === "saved" ? "Progress saved to this child profile." : saveStatus === "error" ? "Cloud save failed; the result is still on this device." : "Saving progress…") : "Your result is saved only in this browser while you are a guest."}</p>
+        <p>You practiced for {Math.max(1, elapsed)} seconds. {childId ? trackedSaveNotice(saveStatus) : "Your result is saved only in this browser while you are a guest."}</p>
         <div className="result-actions">
           <button className="button button-primary" onClick={begin}>Practice again</button>
           <Link className="button button-quiet" href={`/?grade=${grade}${childId ? `&child=${encodeURIComponent(childId)}` : ""}`}>Choose another activity</Link>
@@ -224,6 +227,14 @@ export function PracticeSession({ assessment, grade, childId }: Props) {
       {showFeedback && <div className="feedback" role="status">Answer saved. Keep going!</div>}
     </section>
   );
+}
+
+function trackedSaveNotice(status: "local" | "saving" | "saved" | "consent" | "rate-limit" | "error") {
+  if (status === "saved") return "Progress saved to this child profile.";
+  if (status === "consent") return <>A parent needs to accept the updated privacy notice. <Link href="/parent/consent">Review the notice.</Link></>;
+  if (status === "rate-limit") return "Cloud saving is paused briefly; the result is still on this device.";
+  if (status === "error") return "Cloud save failed; the result is still on this device.";
+  return "Saving progress…";
 }
 
 function localAttemptId() {

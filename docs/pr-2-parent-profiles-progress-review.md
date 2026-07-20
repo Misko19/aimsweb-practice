@@ -162,4 +162,3 @@ Relatedly, `components/HomePage.tsx:27` renders the `Guest mode` pill unconditio
 - **F10 — CONFIRM.** The build wrapper no longer synthesizes a secret. It loads local Next environment files and exits nonzero unless a non-placeholder 32+ character secret and canonical URL are configured.
 
 The deletion-cascade, duplicate-attempt replay, consent-bypass recovery, and tracked-grade test gaps were also closed. The remaining 12-profile/missing-id edge assertions are lower-level coverage opportunities rather than unresolved merge blockers.
-

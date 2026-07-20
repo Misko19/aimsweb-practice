@@ -18,7 +18,7 @@ export async function POST(request: Request) {
   const session = await getCurrentSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   if (!await getCurrentConsent(session.user.id)) return NextResponse.json({ error: "Privacy notice acceptance is required." }, { status: 403 });
-  const limit = takeRateLimit(`${session.user.id}:children`, 20, 60 * 60 * 1000);
+  const limit = takeRateLimit(session.user.id + ":children", 100, 60 * 60 * 1000);
   if (!limit.allowed) return NextResponse.json({ error: "Too many profile changes. Please try again later." }, { status: 429, headers: { "Retry-After": String(limit.retryAfterSeconds) } });
   const parsed = childProfileInput.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "Invalid profile." }, { status: 400 });

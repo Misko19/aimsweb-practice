@@ -25,8 +25,8 @@ test("parent creates a child and sees saved practice progress", async ({ page },
   await expect(page.getByText("Profile tracking")).toBeVisible();
   await expect(page.getByLabel("Grade level")).toBeDisabled();
 
-  const vocabularyCard = page.getByRole("article").filter({ hasText: "Vocabulary" });
-  await vocabularyCard.getByRole("link", { name: /Start practice/ }).click();
+  await page.goto("/practice/vocabulary?child=" + encodeURIComponent(childId));
+  await expect(page.getByText("2nd grade", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: /Let's go/ }).click();
   const progress = await page.locator(".practice-progress").innerText();
   const total = Number(progress.match(/of (\d+)/i)?.[1]);
