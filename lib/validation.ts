@@ -26,6 +26,6 @@ export const attemptInput = z.object({
   correct: z.number().int().min(0).max(10_000),
   total: z.number().int().positive().max(10_000),
   durationSeconds: z.number().int().positive().max(3_600),
-  kind: z.enum(["accuracy", "words-read"]),
+  kind: z.enum(["accuracy", "words-read", "word-count"]),
   completedAt: z.iso.datetime(),
 }).refine((value) => value.correct <= value.total, { message: "Correct answers cannot exceed the total." });

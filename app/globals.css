@@ -7,9 +7,9 @@
   --blue: #dfefff;
   --purple: #6d59d9;
   --purple-dark: #4939a8;
-  --coral: #ff806f;
+  --coral: #c94f43;
   --yellow: #f6c94c;
-  --green: #2d8a63;
+  --green: #1f6a4c;
   --border: #dce2e8;
   --shadow: 0 14px 38px rgb(44 56 85 / 10%);
 }
@@ -299,3 +299,6 @@ footer .brand { color: var(--ink); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .001ms !important; animation-duration: .001ms !important; animation-iteration-count: 1 !important; }
 }
+
+.writing-input { width: 100%; min-height: 240px; padding: 1rem; border: 2px solid var(--border); border-radius: 14px; resize: vertical; font: inherit; line-height: 1.55; }
+.writing-input:focus { border-color: var(--purple); outline: 3px solid rgb(108 82 232 / 20%); }

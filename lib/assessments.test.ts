@@ -4,6 +4,7 @@ import { ASSESSMENTS, GRADES, assessmentsForGrade, gradeLabel } from "./assessme
 describe("assessment catalog", () => {
   it("has unique slugs and usable metadata", () => {
     expect(new Set(ASSESSMENTS.map(({ slug }) => slug)).size).toBe(ASSESSMENTS.length);
+    expect(ASSESSMENTS).toHaveLength(27);
     for (const assessment of ASSESSMENTS) {
       expect(assessment.name).toBeTruthy();
       expect(assessment.description.length).toBeGreaterThan(20);
@@ -17,15 +18,19 @@ describe("assessment catalog", () => {
     expect(available.some(({ domain }) => domain === "Math")).toBe(true);
   });
 
-  it("maps core second-grade activities", () => {
+  it("maps core and classic second-grade activities", () => {
     const slugs = assessmentsForGrade("2").map(({ slug }) => slug);
     expect(slugs).toEqual(expect.arrayContaining([
       "oral-reading-fluency",
       "vocabulary",
       "reading-comprehension",
+      "reading-comprehension-progress",
+      "reading-maze",
+      "written-expression",
       "number-comparison-triads",
       "mental-computation",
       "concepts-applications",
+      "math-cap",
     ]));
   });
 

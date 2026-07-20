@@ -43,7 +43,7 @@ The catalog in `lib/assessments.ts` is the executable mapping. Seasonal details 
 
 Pearson scores include raw counts/rates and, depending on the measure, vertical scale scores, nationally normed percentiles, composites, student growth percentiles, and configurable risk tiers. Some fluency scores apply validity or corrected-for-guessing rules. These conversions depend on secured items, grade, form, season, and norm set.
 
-BrightPath reports only correct out of attempted, practice accuracy, self/adult-reported words read accurately, time spent, personal history, and trends within the same BrightPath activity. It never reports an official aimswebPlus score, percentile, composite, benchmark category, risk tier, or predicted official result.
+BrightPath reports only correct out of attempted, practice accuracy, self/adult-reported words read accurately, original-writing word counts, time spent, personal history, and trends within the same BrightPath activity. It never reports an official aimswebPlus score, percentile, composite, benchmark category, risk tier, or predicted official result.
 
 ## Content and trademark policy
 

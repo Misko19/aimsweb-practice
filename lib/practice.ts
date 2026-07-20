@@ -34,18 +34,30 @@ const wordsByLevel: Record<"early" | "middle" | "advanced", readonly (readonly [
     ["glad", "happy", "sleepy", "empty"],
     ["begin", "start", "hide", "carry"],
     ["swift", "fast", "soft", "round"],
+    ["enormous", "very large", "very quiet", "very old"],
+    ["protect", "keep safe", "take apart", "move quickly"],
+    ["reply", "answer", "question", "picture"],
+    ["fragile", "easy to break", "hard to lift", "full of water"],
   ],
   middle: [
     ["observe", "watch carefully", "forget", "divide"],
     ["scarce", "hard to find", "brightly colored", "easy to carry"],
     ["reluctant", "not eager", "very certain", "full of energy"],
     ["conclude", "decide after thinking", "begin again", "ask permission"],
+    ["fortunate", "having good luck", "feeling confused", "moving slowly"],
+    ["contrast", "show differences", "repeat exactly", "join permanently"],
+    ["essential", "completely necessary", "barely visible", "recently discovered"],
+    ["adapt", "change to fit", "refuse to move", "measure precisely"],
   ],
   advanced: [
     ["ambiguous", "open to more than one meaning", "perfectly balanced", "easily measured"],
     ["mitigate", "make less severe", "copy exactly", "prove impossible"],
     ["pragmatic", "focused on practical results", "guided by nostalgia", "unable to change"],
     ["corroborate", "support with more evidence", "hide from view", "argue without evidence"],
+    ["ubiquitous", "present almost everywhere", "rarely understood", "carefully hidden"],
+    ["nuance", "a subtle distinction", "a final decision", "a loud objection"],
+    ["resilient", "able to recover", "likely to disappear", "unwilling to learn"],
+    ["scrutinize", "examine closely", "summarize briefly", "discard immediately"],
   ],
 } as const;
 
@@ -63,6 +75,62 @@ const passages = {
     text: "For generations, city lighting was designed with one goal: making darkness disappear. Researchers now understand that excessive nighttime light can disrupt migrating birds, obscure the stars, and waste energy. Some communities are responding with shielded fixtures that direct light downward and with warmer bulbs that reduce glare. These changes do not require streets to become unsafe or unwelcoming. Instead, careful design puts light where people need it while allowing parks and skies to recover a measure of natural darkness.",
   },
 } as const;
+
+type QuestionTuple = readonly [string, string, string, string];
+
+const comprehensionQuestions: Record<"early" | "middle" | "advanced", readonly QuestionTuple[]> = {
+  early: [
+    ["How many bean seeds did Maya plant?", "Three", "One", "Ten"],
+    ["Where did Maya place the pot?", "By the window", "Under her bed", "In the garage"],
+    ["When did the green loop appear?", "On Friday", "On Monday", "At night"],
+    ["What did Maya draw?", "The tiny sprout", "The empty pot", "The window"],
+    ["What did Maya do every day?", "Measured the sprout", "Changed the soil", "Picked the leaves"],
+    ["Why did Maya turn the pot?", "So each side could get sunlight", "To spill out the soil", "To hide the leaves"],
+    ["What eventually reached over the rim?", "Broad leaves", "Bean pods", "Long roots"],
+    ["What is the story mostly about?", "Caring for a growing plant", "Buying a notebook", "Cleaning a window"],
+  ],
+  middle: [
+    ["What new kind of library did Lena imagine?", "A tool-lending room", "A music archive", "A seed exchange"],
+    ["Why were many tools available to share?", "They sat unused much of the week", "They were all broken", "Stores stopped selling them"],
+    ["Who labeled the items?", "Volunteers", "Book authors", "Construction crews"],
+    ["What did volunteers write?", "Simple safety guides", "Long tool histories", "Purchase receipts"],
+    ["How soon were families borrowing equipment?", "Within a month", "After five years", "The next morning"],
+    ["What was a main benefit of the room?", "Neighbors shared useful equipment", "The center sold old books", "Repairs were forbidden"],
+    ["What happened after equipment was used?", "It was returned for another project", "It was thrown away", "It became private property"],
+    ["What is the passage mostly about?", "A practical idea that helped neighbors", "A competition between libraries", "A center closing its shelves"],
+  ],
+  advanced: [
+    ["What was the traditional goal of city lighting?", "Making darkness disappear", "Protecting migrating birds", "Revealing more stars"],
+    ["Which animal group can excessive light disrupt?", "Migrating birds", "Underground insects", "Ocean mammals"],
+    ["What do shielded fixtures do?", "Direct light downward", "Make bulbs flash", "Remove every shadow"],
+    ["Why do some communities choose warmer bulbs?", "To reduce glare", "To increase blue light", "To light the sky"],
+    ["What tradeoff does the author reject?", "That reducing light harm requires unsafe streets", "That energy can be wasted", "That stars can be obscured"],
+    ["What does careful design accomplish?", "Puts light where people need it", "Eliminates all nighttime activity", "Makes every park equally bright"],
+    ["What does “a measure” most nearly mean here?", "An amount", "A ruler", "A law"],
+    ["What is the passage’s central idea?", "Thoughtful lighting can serve people while reducing harm", "All city lighting should be removed", "Warm bulbs always use more energy"],
+  ],
+};
+
+const mazeQuestions: readonly QuestionTuple[] = [
+  ["The rain stopped, so we ___ our walk.", "continued", "melted", "whispered"],
+  ["Nia packed a snack ___ she left for practice.", "before", "unless", "although"],
+  ["The puppy was ___ to greet us.", "eager", "distant", "silent"],
+  ["We used a map to ___ the hidden trail.", "locate", "erase", "borrow"],
+  ["The glass vase is ___, so carry it carefully.", "fragile", "enormous", "ordinary"],
+  ["The class compared both plans before making a ___.", "decision", "shadow", "mixture"],
+  ["Because the evidence was incomplete, the result remained ___.", "uncertain", "identical", "permanent"],
+  ["The new evidence helped ___ the scientist’s explanation.", "support", "conceal", "interrupt"],
+];
+
+export function writingPromptForGrade(grade: Grade) {
+  const prompts = levelForGrade(grade) === "early"
+    ? ["Describe a place where you like to learn.", "Write about a time you helped someone.", "Imagine you found a tiny door. What happens next?", "Explain how to care for a plant."]
+    : levelForGrade(grade) === "middle"
+      ? ["Explain one way a community can share resources.", "Describe a challenge that taught you something.", "Should every student learn a practical skill? Explain.", "Write a story that begins with an unexpected message."]
+      : ["Explain how a design choice can affect a community.", "Argue for one change that would improve daily life.", "Describe how new evidence can change a conclusion.", "Write about the tension between convenience and responsibility."];
+  const numeric = grade === "pre-k" || grade === "k" ? 0 : Number(grade);
+  return prompts[numeric % prompts.length]!;
+}
 
 function levelForGrade(grade: Grade) {
   if (grade === "pre-k" || grade === "k" || Number(grade) <= 3) return "early" as const;
@@ -86,7 +154,7 @@ function item(id: string, prompt: string, answer: string, choices?: string[], ex
 
 function mathItem(slug: string, grade: Grade, id: string, rng: Rng): PracticeItem {
   const limit = numberLimit(grade);
-  const a = Math.max(1, Math.floor(rng() * limit));
+  const a = 1 + Math.floor(rng() * limit);
   const b = Math.max(1, Math.floor(rng() * Math.min(limit, a + 1)));
 
   if (slug === "quantity-total") {
@@ -104,8 +172,11 @@ function mathItem(slug: string, grade: Grade, id: string, rng: Rng): PracticeIte
     });
   }
   if (slug === "number-comparison-pairs") {
-    const values = a === b ? [a, b + 1] : [a, b];
-    const answer = String(Math.max(...values));
+    const first = 1 + Math.floor(rng() * limit);
+    let second = 1 + Math.floor(rng() * limit);
+    if (second === first) second = first === limit ? first - 1 : first + 1;
+    const values = shuffle([first, second], rng);
+    const answer = String(Math.max(first, second));
     return item(id, "Choose the greater number.", answer, values.map(String));
   }
   if (slug === "math-facts-one-digit") {
@@ -124,7 +195,7 @@ function mathItem(slug: string, grade: Grade, id: string, rng: Rng): PracticeIte
     const part = Math.max(1, Math.min(total - 1, b));
     return item(id, `${part} + ? = ${total}`, String(total - part));
   }
-  if (slug === "concepts-applications") {
+  if (slug === "concepts-applications" || slug === "math-cap") {
     if (grade === "pre-k" || grade === "k" || grade === "1") {
       const count = 2 + Math.floor(rng() * (grade === "1" ? 9 : 5));
       return item(id, `Kai has ${count} blocks and gets 1 more. How many blocks now?`, String(count + 1));
@@ -145,6 +216,12 @@ function readingItem(slug: string, grade: Grade, id: string, rng: Rng): Practice
     return pick([
       item(id, "Where do you begin reading a page in English?", "At the top left", ["At the top left", "At the bottom right", "In the middle"]),
       item(id, "What does a space between words show?", "One word ended and another begins", ["One word ended and another begins", "The story is over", "A letter is missing"]),
+      item(id, "Which mark usually ends a telling sentence?", "A period", ["A period", "A comma", "An apostrophe"]),
+      item(id, "What does an uppercase letter often show at the start of a sentence?", "The sentence is beginning", ["The sentence is beginning", "The page is ending", "The word is whispered"]),
+      item(id, "Which way do lines of English print usually move?", "Left to right", ["Left to right", "Bottom to top", "Right to left"]),
+      item(id, "What is the name on the front of a book called?", "The title", ["The title", "The margin", "The paragraph"]),
+      item(id, "What does a question mark tell a reader?", "The sentence asks something", ["The sentence asks something", "A new chapter begins", "A word is missing"]),
+      item(id, "What is a group of sentences about one idea called?", "A paragraph", ["A paragraph", "A letter", "A cover"]),
     ], rng);
   }
   if (slug === "initial-sounds" || slug === "letter-word-sounds") {
@@ -153,6 +230,10 @@ function readingItem(slug: string, grade: Grade, id: string, rng: Rng): Practice
       ["tiger", "top", "leaf", "game"],
       ["boat", "bird", "cat", "rain"],
       ["sock", "sand", "kite", "pig"],
+      ["goat", "game", "moon", "leaf"],
+      ["rain", "ring", "boat", "sock"],
+      ["leaf", "lamp", "tiger", "fish"],
+      ["fish", "fan", "rain", "goat"],
     ] as const;
     const [target, answer, ...others] = pick(sets, rng);
     return item(id, `Which word begins with the same sound as “${target}”?`, answer, shuffle([answer, ...others], rng), { speak: target });
@@ -166,32 +247,34 @@ function readingItem(slug: string, grade: Grade, id: string, rng: Rng): Practice
     return item(id, "Type this letter.", letter.toLowerCase(), undefined, { context: rng() > 0.5 ? letter : letter.toLowerCase() });
   }
   if (slug === "phoneme-segmentation") {
-    const values = pick([["ship", "3"], ["map", "3"], ["stop", "4"], ["fish", "3"], ["moon", "3"]] as const, rng);
+    const values = pick([["ship", "3"], ["map", "3"], ["stop", "4"], ["fish", "3"], ["moon", "3"], ["chat", "3"], ["frog", "4"], ["sun", "3"]] as const, rng);
     return item(id, `How many separate sounds do you hear in “${values[0]}”?`, values[1], ["2", "3", "4"], { speak: values[0] });
   }
   if (slug === "spelling") {
-    const word = pick(level === "early" ? ["ship", "green", "play", "jump"] : level === "middle" ? ["journey", "separate", "curious", "necessary"] : ["conscientious", "accommodate", "rhythm", "perseverance"], rng);
+    const word = pick(level === "early" ? ["ship", "green", "play", "jump", "bright", "float", "smile", "train"] : level === "middle" ? ["journey", "separate", "curious", "necessary", "calendar", "favorite", "mystery", "exercise"] : ["conscientious", "accommodate", "rhythm", "perseverance", "indispensable", "entrepreneur", "questionnaire", "maintenance"], rng);
     return item(id, "Listen, then type the word.", word, undefined, { speak: word });
   }
   if (slug === "nonsense-word-fluency") {
-    const word = pick(["lat", "mip", "sog", "vab", "nup"], rng);
+    const word = pick(["lat", "mip", "sog", "vab", "nup", "fep", "rish", "dax"], rng);
     return item(id, "Sound out this make-believe word. Which real word starts with the same sound?", word[0] === "m" ? "moon" : word[0] === "s" ? "sun" : word[0] === "n" ? "nest" : word[0] === "v" ? "van" : "lamp", shuffle([word[0] === "m" ? "moon" : word[0] === "s" ? "sun" : word[0] === "n" ? "nest" : word[0] === "v" ? "van" : "lamp", "fish", "cake"], rng), { context: word });
   }
   if (slug === "word-reading-fluency") {
-    const [word, answer, wrongA] = pick([["little", "small", "noisy"], ["quick", "fast", "empty"], ["under", "below", "above"]] as const, rng);
+    const [word, answer, wrongA] = pick(
+      [["little", "small", "noisy"], ["quick", "fast", "empty"], ["under", "below", "above"], ["begin", "start", "stop"], ["glad", "happy", "angry"], ["large", "big", "tiny"], ["silent", "quiet", "bright"], ["finish", "end", "open"]] as const, rng);
     return item(id, "Read the word. Which word means nearly the same thing?", answer, shuffle([answer, wrongA, "round"], rng), { context: word });
   }
 
   const passage = passages[level];
   if (slug === "listening-comprehension") {
-    return item(id, "What did Maya do after the sprout appeared?", "She drew and measured it", ["She drew and measured it", "She moved it outside", "She gave it away"], { context: "Tap the speaker and listen without reading.", speak: passages.early.text });
+    const qa = pick(comprehensionQuestions.early, rng);
+    return item(id, qa[0], qa[1], shuffle([qa[1], qa[2], qa[3]], rng), { context: "Tap the speaker and listen without reading.", speak: passages.early.text });
   }
-  if (slug === "silent-reading-fluency" || slug === "reading-comprehension") {
-    const qa = level === "early"
-      ? ["Why did Maya turn the pot?", "So each side could get sunlight", "To spill out the soil", "To hide the leaves"]
-      : level === "middle"
-        ? ["What was the main benefit of the tool-lending room?", "Neighbors could share useful equipment", "The center could sell old books", "Volunteers could avoid repairs"]
-        : ["What is the passage’s central idea?", "Thoughtful lighting can serve people while reducing harm", "All city lighting should be removed", "Warm bulbs always use more energy"];
+  if (slug === "reading-maze") {
+    const qa = pick(mazeQuestions, rng);
+    return item(id, qa[0], qa[1], shuffle([qa[1], qa[2], qa[3]], rng));
+  }
+  if (slug === "silent-reading-fluency" || slug === "reading-comprehension" || slug === "reading-comprehension-progress") {
+    const qa = pick(comprehensionQuestions[level], rng);
     return item(id, qa[0], qa[1], shuffle([qa[1], qa[2], qa[3]], rng), { context: passage.text });
   }
   return item(id, "Choose the word that best completes the sentence: The puppy was ___ to greet us.", "eager", ["eager", "distant", "silent"]);
