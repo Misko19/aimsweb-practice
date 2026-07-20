@@ -10,6 +10,10 @@ describe("account data validation", () => {
     expect(childProfileInput.safeParse({ nickname: "x".repeat(31), grade: "college", avatar: "fox" }).success).toBe(false);
   });
 
+  it("accepts written-expression word counts", () => {
+    expect(attemptInput.safeParse({ clientAttemptId: "attempt-write", childProfileId: "child-123", assessmentSlug: "written-expression", grade: "2", correct: 12, total: 12, durationSeconds: 180, kind: "word-count", completedAt: new Date().toISOString() }).success).toBe(true);
+  });
+
   it("rejects impossible and malformed practice results", () => {
     const base = {
       clientAttemptId: "attempt-123",

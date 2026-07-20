@@ -47,6 +47,10 @@ test("attempt replay is idempotent and parent APIs reject another account's chil
     expect((await other.request.post("/api/attempts", { data: replayPayload })).status()).toBe(200);
     const ownExport = await other.request.get("/api/parent/export");
     expect((await ownExport.json()).attempts).toHaveLength(1);
+    const writingResponse = await other.request.post("/api/attempts", { data: { ...replayPayload, clientAttemptId: crypto.randomUUID(), assessmentSlug: "written-expression", correct: 12, total: 12, durationSeconds: 180, kind: "word-count" } });
+    expect(writingResponse.status()).toBe(200);
+    const updatedExport = await other.request.get("/api/parent/export");
+    expect((await updatedExport.json()).attempts).toHaveLength(2);
 
     const foreignAttempt = await other.request.post("/api/attempts", { data: { ...replayPayload, clientAttemptId: crypto.randomUUID(), childProfileId: childId } });
     expect(foreignAttempt.status()).toBe(404);

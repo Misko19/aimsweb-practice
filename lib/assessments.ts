@@ -2,7 +2,7 @@ export const GRADES = ["pre-k", "k", "1", "2", "3", "4", "5", "6", "7", "8", "9"
 
 export type Grade = (typeof GRADES)[number];
 export type Domain = "Reading" | "Math";
-export type PracticeMode = "questions" | "oral-reading";
+export type PracticeMode = "questions" | "oral-reading" | "writing";
 
 export type Assessment = {
   slug: string;
@@ -185,6 +185,41 @@ export const ASSESSMENTS: readonly Assessment[] = [
     mode: "questions",
   },
   {
+    slug: "reading-comprehension-progress",
+    name: "Reading Comprehension Progress Monitoring",
+    abbreviation: "RC–PM",
+    domain: "Reading",
+    grades: range(2, 5),
+    description: "Practice answering questions about short original passages on a five-minute clock.",
+    officialTime: "5 min",
+    practiceTime: "about 6 min",
+    mode: "questions",
+  },
+  {
+    slug: "reading-maze",
+    name: "Reading Maze",
+    abbreviation: "Maze",
+    domain: "Reading",
+    grades: range(1, 12),
+    description: "Choose the word that makes sense in each original sentence.",
+    officialTime: "3 min",
+    practiceTime: "about 5 min",
+    mode: "questions",
+    benchmarkOnly: true,
+  },
+  {
+    slug: "written-expression",
+    name: "Written Expression",
+    abbreviation: "WE",
+    domain: "Reading",
+    grades: range(1, 12),
+    description: "Plan briefly, then write an original response to a grade-appropriate prompt.",
+    officialTime: "1 min planning + 3 min writing",
+    practiceTime: "about 5 min",
+    mode: "writing",
+    benchmarkOnly: true,
+  },
+  {
     slug: "quantity-total",
     name: "Quantity Total Fluency",
     abbreviation: "QTF",
@@ -211,7 +246,7 @@ export const ASSESSMENTS: readonly Assessment[] = [
     name: "Quantity Difference Fluency",
     abbreviation: "QDF",
     domain: "Math",
-    grades: ["pre-k", "k"],
+    grades: ["k"],
     description: "Tell how many more objects one group has.",
     officialTime: "1 min",
     practiceTime: "3 min",
@@ -271,6 +306,18 @@ export const ASSESSMENTS: readonly Assessment[] = [
     officialTime: "4 min",
     practiceTime: "5 min",
     mode: "questions",
+  },
+  {
+    slug: "math-cap",
+    name: "Math Concepts and Applications",
+    abbreviation: "M–CAP",
+    domain: "Math",
+    grades: range(2, 12),
+    description: "Practice a mixed set of original computation and applied math problems.",
+    officialTime: "8–10 min",
+    practiceTime: "about 7 min",
+    mode: "questions",
+    benchmarkOnly: true,
   },
   {
     slug: "concepts-applications",

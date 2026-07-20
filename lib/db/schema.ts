@@ -50,7 +50,7 @@ export const practiceAttempt = sqliteTable(
     correct: integer("correct").notNull(),
     total: integer("total").notNull(),
     durationSeconds: integer("duration_seconds").notNull(),
-    kind: text("kind", { enum: ["accuracy", "words-read"] }).notNull(),
+    kind: text("kind", { enum: ["accuracy", "words-read", "word-count"] }).notNull(),
     completedAt: timestamp("completed_at").notNull(),
     createdAt: timestamp("created_at").default(sql`(cast(unixepoch('subsecond') * 1000 as integer))`).notNull(),
   },

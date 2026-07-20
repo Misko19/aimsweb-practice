@@ -20,7 +20,7 @@ export async function POST(request: Request) {
   if (!parsed.success) return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "Invalid attempt." }, { status: 400 });
   const assessment = findAssessment(parsed.data.assessmentSlug);
   if (!assessment || !assessment.grades.includes(parsed.data.grade)) return NextResponse.json({ error: "Invalid activity for this grade." }, { status: 400 });
-  const expectedKind = assessment.mode === "oral-reading" ? "words-read" : "accuracy";
+  const expectedKind = assessment.mode === "oral-reading" ? "words-read" : assessment.mode === "writing" ? "word-count" : "accuracy";
   if (parsed.data.kind !== expectedKind) return NextResponse.json({ error: "Attempt type does not match the activity." }, { status: 400 });
 
   const child = await db.select({ id: childProfile.id, grade: childProfile.grade }).from(childProfile).where(and(

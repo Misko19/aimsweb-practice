@@ -25,6 +25,7 @@ Pearson's current assessment matrix covers Pre-K through Grade 12. Schools selec
 | Reading | Oral Reading Fluency | 1–12 | Adult-recorded; one-minute passages |
 | Reading | Vocabulary | 2–12 | Student online, untimed |
 | Reading | Reading Comprehension | 2–12 | Student online, untimed |
+| Reading | Reading Comprehension Progress Monitoring | 2–5 | Student online, 5 minutes |
 | Reading | Silent Reading Fluency | 4–12 | Student online; passage rates |
 | Reading classic | Reading Maze and Written Expression | 1–12 | Paper/pencil, brief timed measures |
 | Math | Quantity Total Fluency | Pre-K–K | Individual, 1 minute |
@@ -43,7 +44,7 @@ The catalog in `lib/assessments.ts` is the executable mapping. Seasonal details 
 
 Pearson scores include raw counts/rates and, depending on the measure, vertical scale scores, nationally normed percentiles, composites, student growth percentiles, and configurable risk tiers. Some fluency scores apply validity or corrected-for-guessing rules. These conversions depend on secured items, grade, form, season, and norm set.
 
-BrightPath reports only correct out of attempted, practice accuracy, self/adult-reported words read accurately, time spent, personal history, and trends within the same BrightPath activity. It never reports an official aimswebPlus score, percentile, composite, benchmark category, risk tier, or predicted official result.
+BrightPath reports only correct out of attempted, practice accuracy, self/adult-reported words read accurately, original-writing word counts, time spent, personal history, and trends within the same BrightPath activity. It never reports an official aimswebPlus score, percentile, composite, benchmark category, risk tier, or predicted official result.
 
 ## Content and trademark policy
 
