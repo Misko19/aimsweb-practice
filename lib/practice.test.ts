@@ -14,7 +14,9 @@ describe("practice item generation", () => {
   it("generates answerable items for every catalog entry and grade", () => {
     for (const assessment of ASSESSMENTS) {
       const questions = generatePracticeItems(assessment, assessment.grades[0], 4, seeded(42));
-      expect(questions).toHaveLength(4);
+      expect(questions.length).toBeGreaterThan(0);
+      expect(questions.length).toBeLessThanOrEqual(4);
+      expect(new Set(questions.map((question) => question.prompt + question.context + question.answer)).size).toBe(questions.length);
       for (const question of questions) {
         expect(question.prompt).toBeTruthy();
         expect(question.answer).toBeTruthy();

@@ -5,8 +5,8 @@ import Link from "next/link";
 import { GRADES, assessmentsForGrade, gradeLabel, type Domain, type Grade } from "@/lib/assessments";
 import { Brand } from "./Brand";
 
-export function HomePage() {
-  const [grade, setGrade] = useState<Grade>("2");
+export function HomePage({ initialGrade = "2" }: { initialGrade?: Grade }) {
+  const [grade, setGrade] = useState<Grade>(initialGrade);
   const [domain, setDomain] = useState<Domain | "All">("All");
 
   const assessments = useMemo(
@@ -16,7 +16,7 @@ export function HomePage() {
 
   function changeGrade(next: Grade) {
     setGrade(next);
-    window.localStorage.setItem("brightpath-grade", next);
+    window.history.replaceState(null, "", `/?grade=${next}`);
   }
 
   return (
@@ -25,7 +25,7 @@ export function HomePage() {
         <Brand />
         <nav aria-label="Main navigation">
           <span className="guest-pill">Guest mode</span>
-          <Link className="button button-quiet" href="/parent">Parent area</Link>
+          <Link className="button button-quiet" href="/about">For grown-ups</Link>
         </nav>
       </header>
       <main id="main-content">

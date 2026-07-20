@@ -9,9 +9,15 @@ test("guest can choose grade 2 and complete a reading activity", async ({ page }
   await expect(page).toHaveURL(/practice\/vocabulary\?grade=2/);
   await page.getByRole("button", { name: /Let's go/ }).click();
 
-  for (let index = 0; index < 8; index += 1) {
+  const progress = await page.locator(".practice-progress").innerText();
+  const total = Number(progress.match(/of (\d+)/i)?.[1]);
+  expect(total).toBeGreaterThan(0);
+  for (let index = 0; index < total; index += 1) {
     await page.getByRole("group", { name: "Answer choices" }).getByRole("button").first().click();
-    await page.getByRole("button", { name: "Check answer" }).click();
+    const checkAnswer = page.getByRole("button", { name: "Check answer" });
+    await expect(checkAnswer).toBeEnabled();
+    await checkAnswer.click();
+    await expect(page.getByRole("status")).toBeHidden();
   }
 
   await expect(page.getByRole("heading", { name: "Nice, steady work!" })).toBeVisible();

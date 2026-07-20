@@ -21,6 +21,8 @@ export function PracticeSession({ assessment, grade }: Props) {
   const [readingDone, setReadingDone] = useState(false);
   const startedAt = useRef(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  const submitLocked = useRef(false);
+  const feedbackTimeout = useRef<number | undefined>(undefined);
   const passage = useMemo(() => oralPassageForGrade(grade), [grade]);
   const current = items[index];
 
@@ -34,7 +36,13 @@ export function PracticeSession({ assessment, grade }: Props) {
     if (stage === "active" && assessment.mode !== "oral-reading") inputRef.current?.focus();
   }, [stage, index, assessment.mode]);
 
+  useEffect(() => () => {
+    if (feedbackTimeout.current !== undefined) window.clearTimeout(feedbackTimeout.current);
+  }, []);
+
   function begin() {
+    if (feedbackTimeout.current !== undefined) window.clearTimeout(feedbackTimeout.current);
+    submitLocked.current = false;
     setItems(generatePracticeItems(assessment, grade));
     setIndex(0);
     setAnswer("");
@@ -53,24 +61,28 @@ export function PracticeSession({ assessment, grade }: Props) {
   }
 
   function submitAnswer() {
-    if (!current || !answer.trim()) return;
+    if (submitLocked.current || !current || !answer.trim()) return;
+    submitLocked.current = true;
     const wasCorrect = isCorrectAnswer(answer, current.answer);
     if (wasCorrect) setCorrect((value) => value + 1);
     setShowFeedback(true);
-    window.setTimeout(() => {
+    feedbackTimeout.current = window.setTimeout(() => {
       setShowFeedback(false);
       setAnswer("");
+      submitLocked.current = false;
       if (index + 1 >= items.length) finish(correct + (wasCorrect ? 1 : 0));
       else setIndex((value) => value + 1);
     }, 700);
   }
 
   function finish(finalCorrect = correct) {
+    const oralCount = Number(wordsRead);
+    if (assessment.mode === "oral-reading" && (!Number.isInteger(oralCount) || oralCount < 0 || oralCount > passage.wordCount)) return;
     const result = {
-      id: crypto.randomUUID(),
+      id: localAttemptId(),
       assessment: assessment.slug,
       grade,
-      correct: assessment.mode === "oral-reading" ? Number(wordsRead || 0) : finalCorrect,
+      correct: assessment.mode === "oral-reading" ? oralCount : finalCorrect,
       total: assessment.mode === "oral-reading" ? passage.wordCount : items.length,
       durationSeconds: Math.max(1, Math.floor((Date.now() - startedAt.current) / 1000)),
       completedAt: new Date().toISOString(),
@@ -96,7 +108,7 @@ export function PracticeSession({ assessment, grade }: Props) {
         <div className="instruction-box">
           <h2>How this practice works</h2>
           <ul>
-            <li>{assessment.mode === "oral-reading" ? "Read the original passage aloud for up to one minute." : "Answer 8 short, original practice questions."}</li>
+            <li>{assessment.mode === "oral-reading" ? "Read the original passage aloud for up to one minute." : "Answer a short set of original practice questions."}</li>
             <li>This is practice, so take your time and do your best.</li>
             {assessment.adultHelp && <li>A grown-up helper can sit nearby.</li>}
           </ul>
@@ -115,7 +127,7 @@ export function PracticeSession({ assessment, grade }: Props) {
         <p className="eyebrow">Adventure complete</p>
         <h1>Nice, steady work!</h1>
         {assessment.mode === "oral-reading" ? (
-          <p className="big-result"><strong>{Number(wordsRead || 0)}</strong><span>words read accurately</span></p>
+          <p className="big-result"><strong>{Number(wordsRead)}</strong><span>words read accurately</span></p>
         ) : (
           <p className="big-result"><strong>{correct} of {items.length}</strong><span>correct · {percentage}% practice accuracy</span></p>
         )}
@@ -129,6 +141,8 @@ export function PracticeSession({ assessment, grade }: Props) {
   }
 
   if (assessment.mode === "oral-reading") {
+    const oralCount = Number(wordsRead);
+    const validOralCount = wordsRead !== "" && Number.isInteger(oralCount) && oralCount >= 0 && oralCount <= passage.wordCount;
     return (
       <section className="practice-panel oral-panel">
         <div className="practice-progress"><span>Read aloud</span><span aria-label={`${elapsed} seconds elapsed`}>{Math.min(elapsed, 60)} sec</span></div>
@@ -140,7 +154,7 @@ export function PracticeSession({ assessment, grade }: Props) {
           <div className="self-score">
             <label htmlFor="words-read">With a grown-up, enter how many words were read correctly (up to {passage.wordCount}).</label>
             <input id="words-read" type="number" min="0" max={passage.wordCount} value={wordsRead} onChange={(event) => setWordsRead(event.target.value)} />
-            <button className="button button-primary" disabled={wordsRead === "" || Number(wordsRead) > passage.wordCount} onClick={() => finish()}>See my result</button>
+            <button className="button button-primary" disabled={!validOralCount} onClick={() => finish()}>See my result</button>
           </div>
         )}
       </section>
@@ -172,4 +186,9 @@ export function PracticeSession({ assessment, grade }: Props) {
       {showFeedback && <div className="feedback" role="status">Answer saved. Keep going!</div>}
     </section>
   );
+}
+
+function localAttemptId() {
+  if (typeof globalThis.crypto?.randomUUID === "function") return globalThis.crypto.randomUUID();
+  return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 }

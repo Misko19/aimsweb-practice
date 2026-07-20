@@ -19,8 +19,14 @@ export type OralPassage = {
 type Rng = () => number;
 
 const pick = <T,>(values: readonly T[], rng: Rng) => values[Math.floor(rng() * values.length)]!;
-const shuffle = <T,>(values: readonly T[], rng: Rng) =>
-  [...values].sort(() => rng() - 0.5);
+const shuffle = <T,>(values: readonly T[], rng: Rng) => {
+  const shuffled = [...values];
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const swapWith = Math.floor(rng() * (index + 1));
+    [shuffled[index], shuffled[swapWith]] = [shuffled[swapWith]!, shuffled[index]!];
+  }
+  return shuffled;
+};
 
 const wordsByLevel: Record<"early" | "middle" | "advanced", readonly (readonly [string, string, string, string])[]> = {
   early: [
@@ -102,6 +108,12 @@ function mathItem(slug: string, grade: Grade, id: string, rng: Rng): PracticeIte
     const answer = String(Math.max(...values));
     return item(id, "Choose the greater number.", answer, values.map(String));
   }
+  if (slug === "math-facts-one-digit") {
+    const x = Math.floor(rng() * 10);
+    const y = Math.floor(rng() * 10);
+    const subtract = rng() > 0.5 && x >= y;
+    return subtract ? item(id, `${x} − ${y} = ?`, String(x - y)) : item(id, `${x} + ${y} = ?`, String(x + y));
+  }
   if (slug === "math-facts-tens") {
     const x = (1 + Math.floor(rng() * 9)) * 10;
     const y = (1 + Math.floor(rng() * 5)) * 10;
@@ -113,8 +125,8 @@ function mathItem(slug: string, grade: Grade, id: string, rng: Rng): PracticeIte
     return item(id, `${part} + ? = ${total}`, String(total - part));
   }
   if (slug === "concepts-applications") {
-    if (grade === "pre-k" || grade === "k") {
-      const count = 2 + Math.floor(rng() * 5);
+    if (grade === "pre-k" || grade === "k" || grade === "1") {
+      const count = 2 + Math.floor(rng() * (grade === "1" ? 9 : 5));
       return item(id, `Kai has ${count} blocks and gets 1 more. How many blocks now?`, String(count + 1));
     }
     const groups = 2 + Math.floor(rng() * Math.min(8, Number(grade) || 2));
@@ -151,7 +163,7 @@ function readingItem(slug: string, grade: Grade, id: string, rng: Rng): Practice
   }
   if (slug === "letter-naming") {
     const letter = pick("BCDFGHJKLMNPRSTVWYZ".split(""), rng);
-    return item(id, "Type the name of this letter.", letter.toLowerCase(), undefined, { context: rng() > 0.5 ? letter : letter.toLowerCase() });
+    return item(id, "Type this letter.", letter.toLowerCase(), undefined, { context: rng() > 0.5 ? letter : letter.toLowerCase() });
   }
   if (slug === "phoneme-segmentation") {
     const values = pick([["ship", "3"], ["map", "3"], ["stop", "4"], ["fish", "3"], ["moon", "3"]] as const, rng);
@@ -186,11 +198,21 @@ function readingItem(slug: string, grade: Grade, id: string, rng: Rng): Practice
 }
 
 export function generatePracticeItems(assessment: Assessment, grade: Grade, count = 8, rng: Rng = Math.random) {
-  return Array.from({ length: count }, (_, index) =>
-    assessment.domain === "Math"
-      ? mathItem(assessment.slug, grade, `${assessment.slug}-${index}`, rng)
-      : readingItem(assessment.slug, grade, `${assessment.slug}-${index}`, rng),
-  );
+  const generated: PracticeItem[] = [];
+  const seen = new Set<string>();
+  const maxAttempts = Math.max(count * 20, 40);
+
+  for (let attempt = 0; attempt < maxAttempts && generated.length < count; attempt += 1) {
+    const candidate = assessment.domain === "Math"
+      ? mathItem(assessment.slug, grade, `${assessment.slug}-${generated.length}`, rng)
+      : readingItem(assessment.slug, grade, `${assessment.slug}-${generated.length}`, rng);
+    const key = `${candidate.prompt}\u0000${candidate.context ?? ""}\u0000${candidate.answer}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    generated.push(candidate);
+  }
+
+  return generated;
 }
 
 export function oralPassageForGrade(grade: Grade): OralPassage {
