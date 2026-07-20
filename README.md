@@ -16,6 +16,16 @@ npm run dev
 
 Open `http://localhost:3000`. The default `DATABASE_PATH` uses a local SQLite database under `data/`; database files are ignored by Git. The build fails closed unless `BETTER_AUTH_SECRET` contains a random value of at least 32 characters and `BETTER_AUTH_URL` contains the canonical app URL. Never reuse the example or test secrets in a deployment.
 
+### Local network development
+
+To use BrightPath from another device on your local network, bind the server to all interfaces and set both URL settings to the computer’s LAN address:
+
+```bash
+BETTER_AUTH_URL=http://192.168.1.14:3000 ALLOWED_DEV_ORIGINS=192.168.1.14 npm run dev -- --hostname 0.0.0.0
+```
+
+Replace `192.168.1.14` with the development computer’s current LAN address. `ALLOWED_DEV_ORIGINS` accepts comma-separated bare hostnames or IP addresses without schemes, ports, paths, or wildcards. `BETTER_AUTH_URL` must use the same browser-visible origin so parent sign-in and sign-up pass origin validation.
+
 ## Quality checks
 
 ```bash
